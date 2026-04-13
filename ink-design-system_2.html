@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ink Design System v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@400;500&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   INK DESIGN SYSTEM v1.0
+   Tokens, Tipografia, Cores, Componentes
+   ============================================================ */
+
+:root {
+  /* ── Neutros ── */
+  --ink:     #1C1814;
+  --ink-2:   #3D3630;
+  --ink-3:   #6B6259;
+  --paper:   #FAF8F4;
+  --cream:   #F2EDE4;
+  --mist:    #E8E2D8;
+
+  /* ── Acento principal ── */
+  --amber:   #C97B1A;
+  --amber-l: #FDF3E0;
+  --amber-m: #F0B84E;
+  --amber-d: #8A520E;
+
+  /* ── Semânticas ── */
+  --sage:    #3D6B4F;   /* sucesso */
+  --sage-l:  #E8F3ED;
+  --sage-d:  #254030;
+  --clay:    #B5472A;   /* erro */
+  --clay-l:  #FAEAE6;
+  --clay-d:  #7A2E1A;
+  --slate:   #4A5C72;   /* informação */
+  --slate-l: #EAF0F7;
+  --slate-d: #2C3A48;
+
+  /* ── Tipografia ── */
+  --f-display: 'Playfair Display', Georgia, serif;
+  --f-body:    'DM Sans', system-ui, sans-serif;
+  --f-mono:    'DM Mono', 'Fira Code', monospace;
+
+  /* ── Escala tipográfica ── */
+  --text-display: 36px;
+  --text-h1:      28px;
+  --text-h2:      22px;
+  --text-h3:      17px;
+  --text-body:    15px;
+  --text-sm:      13px;
+  --text-xs:      11px;
+  --text-mono:    13px;
+
+  /* ── Espaçamento (múltiplos de 4px) ── */
+  --s1:  4px;
+  --s2:  8px;
+  --s3:  12px;
+  --s4:  16px;
+  --s5:  24px;
+  --s6:  32px;
+  --s7:  48px;
+  --s8:  64px;
+
+  /* ── Border radius ── */
+  --r4:  4px;
+  --r8:  8px;
+  --r12: 12px;
+  --r16: 16px;
+  --r24: 24px;
+  --pill: 999px;
+
+  /* ── Sombras ── */
+  --shadow:    0 1px 3px rgba(28,24,20,.08), 0 4px 12px rgba(28,24,20,.06);
+  --shadow-lg: 0 4px 8px rgba(28,24,20,.08), 0 16px 40px rgba(28,24,20,.12);
+
+  /* ── Transições ── */
+  --transition: all .15s ease;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--f-body);
+  font-size: var(--text-body);
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.ds-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+
+/* ── Sidebar ── */
+.ds-sidebar {
+  background: var(--cream);
+  border-right: 1px solid var(--mist);
+  padding: var(--s5);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.ds-logo {
+  font-family: var(--f-display);
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: var(--s2);
+}
+.ds-logo span { color: var(--amber); }
+.ds-version {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  font-size: 10px;
+  font-family: var(--f-mono);
+  padding: 3px 10px;
+  background: var(--mist);
+  border-radius: var(--pill);
+  color: var(--ink-3);
+  margin-bottom: var(--s6);
+}
+.ds-version::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--sage);
+  display: inline-block;
+}
+.ds-nav-group {
+  margin-bottom: var(--s4);
+}
+.ds-nav-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 0 var(--s3);
+  margin-bottom: var(--s2);
+  display: block;
+}
+.ds-nav a {
+  display: block;
+  padding: 7px var(--s3);
+  border-radius: var(--r8);
+  font-size: 13px;
+  color: var(--ink-3);
+  text-decoration: none;
+  transition: var(--transition);
+  font-weight: 400;
+}
+.ds-nav a:hover { background: var(--mist); color: var(--ink); }
+.ds-nav a.active { background: var(--ink); color: var(--paper); }
+
+/* ── Main content ── */
+.ds-main {
+  padding: var(--s7) var(--s8);
+  max-width: 860px;
+}
+.ds-section {
+  margin-bottom: var(--s8);
+  scroll-margin-top: var(--s6);
+}
+.sec-title {
+  font-family: var(--f-display);
+  font-size: var(--text-h1);
+  font-weight: 700;
+  margin-bottom: var(--s2);
+  padding-bottom: var(--s4);
+  border-bottom: 1px solid var(--mist);
+}
+.sec-desc {
+  font-size: 13px;
+  color: var(--ink-3);
+  margin-top: var(--s2);
+  margin-bottom: var(--s5);
+}
+.group-title {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: var(--s6) 0 var(--s4);
+  padding-bottom: var(--s2);
+  border-bottom: 1px solid var(--mist);
+}
+
+/* ============================================================
+   CORES
+   ============================================================ */
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: var(--s3);
+  margin-bottom: var(--s4);
+}
+.swatch {
+  border-radius: var(--r12);
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,.06);
+  cursor: pointer;
+  transition: transform .15s;
+}
+.swatch:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.swatch-color { height: 80px; }
+.swatch-info { padding: 10px 12px; background: white; }
+.swatch-name { font-size: 12px; font-weight: 500; color: var(--ink); }
+.swatch-hex { font-size: 10px; font-family: var(--f-mono); color: var(--ink-3); margin-top: 2px; }
+.swatch-copy { font-size: 10px; color: var(--sage); font-weight: 500; }
+
+/* ============================================================
+   TIPOGRAFIA
+   ============================================================ */
+.type-scale { border: 1px solid var(--mist); border-radius: var(--r16); overflow: hidden; }
+.type-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s5);
+  padding: var(--s4) var(--s5);
+  border-bottom: 1px solid var(--mist);
+}
+.type-row:last-child { border-bottom: none; }
+.type-row:nth-child(even) { background: var(--paper); }
+.type-meta { width: 140px; flex-shrink: 0; }
+.type-meta-name { font-size: 11px; font-family: var(--f-mono); color: var(--ink-3); }
+.type-meta-size { font-size: 10px; color: var(--ink-3); margin-top: 2px; }
+
+/* Estilos tipográficos */
+.t-display { font-family: var(--f-display); font-size: 36px; font-weight: 700; line-height: 1.1; }
+.t-h1      { font-family: var(--f-display); font-size: 28px; font-weight: 700; line-height: 1.2; }
+.t-h2      { font-family: var(--f-body); font-size: 22px; font-weight: 500; line-height: 1.3; }
+.t-h3      { font-family: var(--f-body); font-size: 17px; font-weight: 500; }
+.t-body    { font-family: var(--f-body); font-size: 15px; line-height: 1.7; }
+.t-small   { font-family: var(--f-body); font-size: 12px; color: var(--ink-3); }
+.t-mono    { font-family: var(--f-mono); font-size: 13px; }
+.t-label   { font-family: var(--f-body); font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+
+/* ============================================================
+   COMPONENTES — BOTÕES
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: 9px 18px;
+  font-size: 13px;
+  font-family: var(--f-body);
+  font-weight: 500;
+  border-radius: var(--r8);
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: var(--transition);
+  text-decoration: none;
+  line-height: 1;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(.98); }
+
+.btn-primary   { background: var(--ink);    color: var(--paper);  border-color: var(--ink); }
+.btn-primary:hover { background: var(--ink-2); }
+
+.btn-secondary { background: transparent; color: var(--ink); border-color: var(--mist); }
+.btn-secondary:hover { background: var(--cream); border-color: var(--ink-3); }
+
+.btn-accent    { background: var(--amber);  color: white; border-color: var(--amber); }
+.btn-accent:hover { background: var(--amber-d); }
+
+.btn-ghost     { background: transparent; color: var(--ink-3); border-color: transparent; }
+.btn-ghost:hover { background: var(--cream); color: var(--ink); }
+
+.btn-danger    { background: transparent; color: var(--clay); border-color: var(--clay); }
+.btn-danger:hover { background: var(--clay-l); }
+
+.btn-success   { background: transparent; color: var(--sage); border-color: var(--sage); }
+.btn-success:hover { background: var(--sage-l); }
+
+/* Tamanhos */
+.btn-xs  { padding: 4px 10px; font-size: 11px; border-radius: var(--r4); }
+.btn-sm  { padding: 6px 12px; font-size: 12px; }
+.btn-lg  { padding: 12px 24px; font-size: 15px; border-radius: var(--r12); }
+
+/* Icon only */
+.btn-icon { width: 36px; height: 36px; padding: 0; justify-content: center; }
+.btn-icon.btn-sm { width: 28px; height: 28px; }
+
+/* Disabled */
+.btn:disabled, .btn[disabled] {
+  opacity: .4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  padding: 3px 10px;
+  border-radius: var(--pill);
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--f-body);
+  white-space: nowrap;
+}
+.badge-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.badge-default { background: var(--cream);    color: var(--ink-2); }
+.badge-amber   { background: var(--amber-l);  color: var(--amber-d); }
+.badge-sage    { background: var(--sage-l);   color: var(--sage-d); }
+.badge-clay    { background: var(--clay-l);   color: var(--clay-d); }
+.badge-slate   { background: var(--slate-l);  color: var(--slate-d); }
+.badge-ink     { background: var(--ink);      color: var(--paper); }
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+  background: white;
+  border: 1px solid var(--mist);
+  border-radius: var(--r16);
+  padding: var(--s5);
+  box-shadow: var(--shadow);
+}
+.card-sm  { padding: var(--s4); border-radius: var(--r12); }
+.card-lg  { padding: var(--s6); }
+.card-accent { border-left: 3px solid var(--amber); }
+.card-flat  { box-shadow: none; background: var(--cream); }
+
+.card-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: var(--s2);
+}
+.card-title {
+  font-family: var(--f-display);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: var(--s1);
+}
+.card-body {
+  font-size: 13px;
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+
+/* Metric card */
+.card-metric .metric-value {
+  font-family: var(--f-display);
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1;
+  display: block;
+}
+.card-metric .metric-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--ink-3);
+  margin-top: var(--s2);
+}
+.card-metric .metric-trend {
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: var(--s3);
+  display: flex;
+  align-items: center;
+  gap: var(--s1);
+}
+.trend-up   { color: var(--sage); }
+.trend-down { color: var(--clay); }
+
+/* ============================================================
+   INPUTS
+   ============================================================ */
+.field { display: flex; flex-direction: column; gap: var(--s2); }
+.field-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.field-hint {
+  font-size: 11px;
+  color: var(--ink-3);
+}
+.field-error .field-hint { color: var(--clay); }
+.field-success .field-hint { color: var(--sage); }
+
+.input, .select, .textarea {
+  padding: 9px 13px;
+  font-size: 13px;
+  font-family: var(--f-body);
+  border: 1.5px solid var(--mist);
+  border-radius: var(--r8);
+  background: white;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .15s;
+  width: 100%;
+}
+.input:hover, .select:hover { border-color: var(--ink-3); }
+.input:focus, .select:focus, .textarea:focus { border-color: var(--amber); }
+
+.field-error  .input { border-color: var(--clay); }
+.field-success .input { border-color: var(--sage); }
+
+.textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+/* Input com ícone */
+.input-wrap { position: relative; }
+.input-wrap .input { padding-left: 36px; }
+.input-wrap .input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-3);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+/* ============================================================
+   TOGGLE / CHECKBOX / RADIO
+   ============================================================ */
+.toggle {
+  width: 40px; height: 22px;
+  background: var(--mist);
+  border-radius: 11px;
+  cursor: pointer;
+  position: relative;
+  border: none;
+  transition: background .2s;
+  flex-shrink: 0;
+}
+.toggle.active { background: var(--ink); }
+.toggle::after {
+  content: '';
+  width: 16px; height: 16px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 3px; left: 3px;
+  transition: left .2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.toggle.active::after { left: 21px; }
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  margin-bottom: var(--s3);
+}
+.toggle-label { font-size: 13px; }
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+.progress { display: flex; flex-direction: column; gap: var(--s2); }
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.progress-track {
+  height: 6px;
+  background: var(--cream);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .6s cubic-bezier(.4, 0, .2, 1);
+}
+.progress-fill.sage  { background: var(--sage); }
+.progress-fill.amber { background: var(--amber); }
+.progress-fill.clay  { background: var(--clay); }
+.progress-fill.slate { background: var(--slate); }
+
+/* ============================================================
+   ALERTAS
+   ============================================================ */
+.alert {
+  display: flex;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r12);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.alert-icon { flex-shrink: 0; font-size: 15px; line-height: 1.4; }
+.alert strong { font-weight: 500; display: block; margin-bottom: 2px; }
+.alert-info    { background: var(--slate-l); color: var(--slate-d); }
+.alert-success { background: var(--sage-l);  color: var(--sage-d); }
+.alert-warning { background: var(--amber-l); color: var(--amber-d); }
+.alert-danger  { background: var(--clay-l);  color: var(--clay-d); }
+
+/* ============================================================
+   AVATAR
+   ============================================================ */
+.avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 500;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+.avatar-sm { width: 28px; height: 28px; font-size: 10px; }
+.avatar-lg { width: 56px; height: 56px; font-size: 18px; }
+
+.av-amber { background: var(--amber-l); color: var(--amber-d); }
+.av-sage  { background: var(--sage-l);  color: var(--sage-d); }
+.av-slate { background: var(--slate-l); color: var(--slate-d); }
+.av-clay  { background: var(--clay-l);  color: var(--clay-d); }
+.av-ink   { background: var(--ink);     color: var(--paper); }
+
+.avatar-stack {
+  display: flex;
+}
+.avatar-stack .avatar {
+  border: 2px solid var(--paper);
+  margin-left: -10px;
+}
+.avatar-stack .avatar:first-child { margin-left: 0; }
+
+/* ============================================================
+   TABS
+   ============================================================ */
+.tabs {
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  background: var(--cream);
+  border-radius: var(--r12);
+  width: fit-content;
+}
+.tab-btn {
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--f-body);
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: var(--r8);
+  color: var(--ink-3);
+  transition: var(--transition);
+}
+.tab-btn:hover { color: var(--ink); }
+.tab-btn.active {
+  background: white;
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+
+/* ============================================================
+   DIVIDER
+   ============================================================ */
+.divider {
+  border: none;
+  border-top: 1px solid var(--mist);
+  margin: var(--s5) 0;
+}
+.divider-label {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  margin: var(--s5) 0;
+}
+.divider-label::before,
+.divider-label::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--mist);
+}
+.divider-label span { font-size: 11px; color: var(--ink-3); white-space: nowrap; }
+
+/* ============================================================
+   TOOLTIP
+   ============================================================ */
+.tooltip-wrap { position: relative; display: inline-block; }
+.tooltip-wrap:hover .tooltip { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r8);
+  white-space: nowrap;
+  opacity: 0;
+  transition: var(--transition);
+  pointer-events: none;
+  z-index: 10;
+}
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%; left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--ink);
+}
+
+/* ============================================================
+   CODE BLOCK
+   ============================================================ */
+.code-block {
+  background: var(--ink);
+  color: #E8E2D8;
+  padding: var(--s5);
+  border-radius: var(--r12);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-x: auto;
+  position: relative;
+}
+.code-block .k  { color: #F0B84E; } /* keyword / property */
+.code-block .s  { color: #7FB88C; } /* string / value */
+.code-block .c  { color: #6B6259; } /* comment */
+.code-block .n  { color: #9DC5E8; } /* name / selector */
+
+/* ============================================================
+   UTILITÁRIOS
+   ============================================================ */
+.flex        { display: flex; align-items: center; }
+.flex-wrap   { flex-wrap: wrap; }
+.flex-col    { flex-direction: column; }
+.flex-between{ justify-content: space-between; }
+.flex-center { justify-content: center; }
+.gap-1 { gap: var(--s1); }
+.gap-2 { gap: var(--s2); }
+.gap-3 { gap: var(--s3); }
+.gap-4 { gap: var(--s4); }
+.gap-5 { gap: var(--s5); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s4); }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s4); }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s4); }
+.mt-1 { margin-top: var(--s1); } .mt-2 { margin-top: var(--s2); }
+.mt-3 { margin-top: var(--s3); } .mt-4 { margin-top: var(--s4); }
+.mt-5 { margin-top: var(--s5); } .mb-5 { margin-bottom: var(--s5); }
+.text-muted  { color: var(--ink-3); }
+.text-sm     { font-size: 13px; }
+.text-xs     { font-size: 11px; }
+.font-mono   { font-family: var(--f-mono); }
+.font-display{ font-family: var(--f-display); }
+.fw-500      { font-weight: 500; }
+
+/* ============================================================
+   DEMO PAGE STYLES
+   ============================================================ */
+.demo-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--pill);
+  font-size: 10px;
+  font-family: var(--f-mono);
+  background: var(--cream);
+  border: 1px solid var(--mist);
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: var(--transition);
+  margin: 2px;
+}
+.demo-chip:hover { background: var(--mist); }
+.demo-chip.copied { color: var(--sage); border-color: var(--sage); }
+
+.comp-box {
+  background: var(--cream);
+  border: 1px solid var(--mist);
+  border-radius: var(--r16);
+  padding: var(--s5);
+  margin-bottom: var(--s3);
+}
+.comp-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  align-items: center;
+}
+
+.space-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s4);
+  padding: 6px 0;
+}
+.space-bar {
+  height: 20px;
+  background: var(--amber);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.space-meta { font-size: 12px; color: var(--ink-3); font-family: var(--f-mono); }
+</style>
+</head>
+<body>
+
+<div class="ds-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="ds-sidebar">
+    <div class="ds-logo">ink<span>.</span></div>
+    <div class="ds-version">v1.0.0 · Ink DS</div>
+
+    <nav class="ds-nav">
+      <div class="ds-nav-group">
+        <span class="ds-nav-label">Fundamentos</span>
+        <a href="#cores" class="active">Cores</a>
+        <a href="#tipografia">Tipografia</a>
+        <a href="#espacamento">Espaçamento</a>
+      </div>
+      <div class="ds-nav-group">
+        <span class="ds-nav-label">Componentes</span>
+        <a href="#botoes">Botões</a>
+        <a href="#badges">Badges</a>
+        <a href="#cards">Cards</a>
+        <a href="#inputs">Inputs</a>
+        <a href="#feedback">Feedback</a>
+        <a href="#avatares">Avatares</a>
+        <a href="#tabs">Tabs & Toggle</a>
+      </div>
+      <div class="ds-nav-group">
+        <span class="ds-nav-label">Tokens</span>
+        <a href="#tokens">CSS Tokens</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="ds-main">
+
+    <!-- CORES -->
+    <section class="ds-section" id="cores">
+      <div class="sec-title">Cores</div>
+      <p class="sec-desc">Paleta editorial com tons quentes. Clique em qualquer swatch para copiar o hex.</p>
+
+      <div class="group-title">Neutros — base editorial</div>
+      <div class="swatch-grid">
+        <div class="swatch" onclick="copySwatch('#1C1814',this)"><div class="swatch-color" style="background:#1C1814"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#1C1814</div></div></div>
+        <div class="swatch" onclick="copySwatch('#3D3630',this)"><div class="swatch-color" style="background:#3D3630"></div><div class="swatch-info"><div class="swatch-name">Ink 2</div><div class="swatch-hex">#3D3630</div></div></div>
+        <div class="swatch" onclick="copySwatch('#6B6259',this)"><div class="swatch-color" style="background:#6B6259"></div><div class="swatch-info"><div class="swatch-name">Ink 3</div><div class="swatch-hex">#6B6259</div></div></div>
+        <div class="swatch" onclick="copySwatch('#E8E2D8',this)"><div class="swatch-color" style="background:#E8E2D8"></div><div class="swatch-info"><div class="swatch-name">Mist</div><div class="swatch-hex">#E8E2D8</div></div></div>
+        <div class="swatch" onclick="copySwatch('#F2EDE4',this)"><div class="swatch-color" style="background:#F2EDE4"></div><div class="swatch-info"><div class="swatch-name">Cream</div><div class="swatch-hex">#F2EDE4</div></div></div>
+        <div class="swatch" onclick="copySwatch('#FAF8F4',this)"><div class="swatch-color" style="background:#FAF8F4;border:1px solid #E8E2D8"></div><div class="swatch-info"><div class="swatch-name">Paper</div><div class="swatch-hex">#FAF8F4</div></div></div>
+      </div>
+
+      <div class="group-title">Âmbar — acento principal</div>
+      <div class="swatch-grid">
+        <div class="swatch" onclick="copySwatch('#8A520E',this)"><div class="swatch-color" style="background:#8A520E"></div><div class="swatch-info"><div class="swatch-name">Amber Dark</div><div class="swatch-hex">#8A520E</div></div></div>
+        <div class="swatch" onclick="copySwatch('#C97B1A',this)"><div class="swatch-color" style="background:#C97B1A"></div><div class="swatch-info"><div class="swatch-name">Amber</div><div class="swatch-hex">#C97B1A</div></div></div>
+        <div class="swatch" onclick="copySwatch('#F0B84E',this)"><div class="swatch-color" style="background:#F0B84E"></div><div class="swatch-info"><div class="swatch-name">Amber Mid</div><div class="swatch-hex">#F0B84E</div></div></div>
+        <div class="swatch" onclick="copySwatch('#FDF3E0',this)"><div class="swatch-color" style="background:#FDF3E0"></div><div class="swatch-info"><div class="swatch-name">Amber Light</div><div class="swatch-hex">#FDF3E0</div></div></div>
+      </div>
+
+      <div class="group-title">Semânticas — status e feedback</div>
+      <div class="swatch-grid">
+        <div class="swatch" onclick="copySwatch('#3D6B4F',this)"><div class="swatch-color" style="background:#3D6B4F"></div><div class="swatch-info"><div class="swatch-name">Sage · sucesso</div><div class="swatch-hex">#3D6B4F</div></div></div>
+        <div class="swatch" onclick="copySwatch('#E8F3ED',this)"><div class="swatch-color" style="background:#E8F3ED"></div><div class="swatch-info"><div class="swatch-name">Sage Light</div><div class="swatch-hex">#E8F3ED</div></div></div>
+        <div class="swatch" onclick="copySwatch('#B5472A',this)"><div class="swatch-color" style="background:#B5472A"></div><div class="swatch-info"><div class="swatch-name">Clay · erro</div><div class="swatch-hex">#B5472A</div></div></div>
+        <div class="swatch" onclick="copySwatch('#FAEAE6',this)"><div class="swatch-color" style="background:#FAEAE6"></div><div class="swatch-info"><div class="swatch-name">Clay Light</div><div class="swatch-hex">#FAEAE6</div></div></div>
+        <div class="swatch" onclick="copySwatch('#4A5C72',this)"><div class="swatch-color" style="background:#4A5C72"></div><div class="swatch-info"><div class="swatch-name">Slate · info</div><div class="swatch-hex">#4A5C72</div></div></div>
+        <div class="swatch" onclick="copySwatch('#EAF0F7',this)"><div class="swatch-color" style="background:#EAF0F7"></div><div class="swatch-info"><div class="swatch-name">Slate Light</div><div class="swatch-hex">#EAF0F7</div></div></div>
+      </div>
+    </section>
+
+    <!-- TIPOGRAFIA -->
+    <section class="ds-section" id="tipografia">
+      <div class="sec-title">Tipografia</div>
+      <p class="sec-desc">Playfair Display (display/títulos) · DM Sans (corpo) · DM Mono (código)</p>
+      <div class="type-scale">
+        <div class="type-row"><div class="type-meta"><div class="type-meta-name">display</div><div class="type-meta-size">36px · bold · Playfair</div></div><div class="t-display">Estudar é investir em si</div></div>
+        <div class="type-row"><div class="type-meta"><div class="type-meta-name">h1</div><div class="type-meta-size">28px · bold · Playfair</div></div><div class="t-h1">Direito Constitucional</div></div>
+        <div class="type-row"><div class="type-meta"><div class="type-meta-name">h2</div><div class="type-meta-size">22px · 500 · DM Sans</div></div><div class="t-h2">Princípios fundamentais</div></div>
+        <div class="type-row"><div class="type-meta"><div class="type-meta-name">h3</div><div class="type-meta-size">17px · 500 · DM Sans</div></div><div class="t-h3">Art. 5 — Direitos e Garantias</div></div>
+        <div class="type-row"><div class="type-meta"><div class="type-meta-name">body</div><div class="type-meta-size">15px · 400 · DM Sans</div></div><div class="t-body">A Constituição Federal de 1988 é a norma suprema do ordenamento jurídico.</div></div>
+        <div class="type-row"><div class="type-meta"><div class="type-meta-name">small</div><div class="type-meta-size">12px · 400 · DM Sans</div></div><div class="t-small">Última atualização: 12 de abril de 2026</div></div>
+        <div class="type-row"><div class="type-meta"><div class="type-meta-name">mono</div><div class="type-meta-size">13px · DM Mono</div></div><div class="t-mono">const aprovado = score >= 70;</div></div>
+        <div class="type-row"><div class="type-meta"><div class="type-meta-name">label</div><div class="type-meta-size">11px · 500 · uppercase</div></div><div class="t-label">Categoria · Matéria</div></div>
+      </div>
+    </section>
+
+    <!-- ESPAÇAMENTO -->
+    <section class="ds-section" id="espacamento">
+      <div class="sec-title">Espaçamento</div>
+      <p class="sec-desc">Escala baseada em múltiplos de 4px para ritmo visual consistente.</p>
+
+      <div class="comp-box">
+        <div class="space-row"><div class="space-meta" style="width:80px">--s1 · 4px</div><div class="space-bar" style="width:4px"></div><span class="text-muted text-sm">Separação mínima, ícone + texto</span></div>
+        <div class="space-row"><div class="space-meta" style="width:80px">--s2 · 8px</div><div class="space-bar" style="width:8px"></div><span class="text-muted text-sm">Gap interno de componentes</span></div>
+        <div class="space-row"><div class="space-meta" style="width:80px">--s3 · 12px</div><div class="space-bar" style="width:12px"></div><span class="text-muted text-sm">Espaço entre elementos próximos</span></div>
+        <div class="space-row"><div class="space-meta" style="width:80px">--s4 · 16px</div><div class="space-bar" style="width:16px"></div><span class="text-muted text-sm">Padding padrão de componente</span></div>
+        <div class="space-row"><div class="space-meta" style="width:80px">--s5 · 24px</div><div class="space-bar" style="width:24px"></div><span class="text-muted text-sm">Entre grupos de elementos</span></div>
+        <div class="space-row"><div class="space-meta" style="width:80px">--s6 · 32px</div><div class="space-bar" style="width:32px"></div><span class="text-muted text-sm">Seção dentro de uma página</span></div>
+        <div class="space-row"><div class="space-meta" style="width:80px">--s7 · 48px</div><div class="space-bar" style="width:48px"></div><span class="text-muted text-sm">Entre seções principais</span></div>
+        <div class="space-row"><div class="space-meta" style="width:80px">--s8 · 64px</div><div class="space-bar" style="width:64px"></div><span class="text-muted text-sm">Hero / grandes blocos</span></div>
+      </div>
+
+      <div class="group-title">Border radius</div>
+      <div class="flex flex-wrap gap-4">
+        <div style="text-align:center"><div style="width:60px;height:60px;background:var(--amber-l);border:1.5px solid var(--amber);border-radius:4px;margin:0 auto var(--s2)"></div><div class="text-xs font-mono text-muted">--r4 · 4px</div></div>
+        <div style="text-align:center"><div style="width:60px;height:60px;background:var(--amber-l);border:1.5px solid var(--amber);border-radius:8px;margin:0 auto var(--s2)"></div><div class="text-xs font-mono text-muted">--r8 · 8px</div></div>
+        <div style="text-align:center"><div style="width:60px;height:60px;background:var(--amber-l);border:1.5px solid var(--amber);border-radius:12px;margin:0 auto var(--s2)"></div><div class="text-xs font-mono text-muted">--r12 · 12px</div></div>
+        <div style="text-align:center"><div style="width:60px;height:60px;background:var(--amber-l);border:1.5px solid var(--amber);border-radius:16px;margin:0 auto var(--s2)"></div><div class="text-xs font-mono text-muted">--r16 · 16px</div></div>
+        <div style="text-align:center"><div style="width:60px;height:60px;background:var(--amber-l);border:1.5px solid var(--amber);border-radius:24px;margin:0 auto var(--s2)"></div><div class="text-xs font-mono text-muted">--r24 · 24px</div></div>
+        <div style="text-align:center"><div style="width:60px;height:60px;background:var(--amber-l);border:1.5px solid var(--amber);border-radius:999px;margin:0 auto var(--s2)"></div><div class="text-xs font-mono text-muted">--pill</div></div>
+      </div>
+    </section>
+
+    <!-- BOTÕES -->
+    <section class="ds-section" id="botoes">
+      <div class="sec-title">Botões</div>
+      <p class="sec-desc">5 variantes × 3 tamanhos. Sempre com foco visível e estado desabilitado.</p>
+
+      <div class="group-title">Variantes</div>
+      <div class="comp-box comp-row">
+        <button class="btn btn-primary">Primário</button>
+        <button class="btn btn-secondary">Secundário</button>
+        <button class="btn btn-accent">Acento</button>
+        <button class="btn btn-ghost">Ghost</button>
+        <button class="btn btn-danger">Danger</button>
+        <button class="btn btn-success">Success</button>
+      </div>
+
+      <div class="group-title">Tamanhos</div>
+      <div class="comp-box comp-row" style="align-items:center">
+        <button class="btn btn-primary btn-xs">Extra pequeno</button>
+        <button class="btn btn-primary btn-sm">Pequeno</button>
+        <button class="btn btn-primary">Médio</button>
+        <button class="btn btn-primary btn-lg">Grande</button>
+        <button class="btn btn-secondary btn-icon">+</button>
+        <button class="btn btn-primary" disabled>Desabilitado</button>
+      </div>
+    </section>
+
+    <!-- BADGES -->
+    <section class="ds-section" id="badges">
+      <div class="sec-title">Badges</div>
+      <p class="sec-desc">Indicadores de status, categoria e contagem.</p>
+      <div class="comp-box comp-row">
+        <span class="badge badge-default">Padrão</span>
+        <span class="badge badge-amber"><span class="badge-dot" style="background:var(--amber)"></span>Atenção</span>
+        <span class="badge badge-sage"><span class="badge-dot" style="background:var(--sage)"></span>Aprovado</span>
+        <span class="badge badge-clay"><span class="badge-dot" style="background:var(--clay)"></span>Erro</span>
+        <span class="badge badge-slate">Informação</span>
+        <span class="badge badge-ink">Novo</span>
+      </div>
+    </section>
+
+    <!-- CARDS -->
+    <section class="ds-section" id="cards">
+      <div class="sec-title">Cards</div>
+      <p class="sec-desc">Superfícies para agrupar conteúdo relacionado.</p>
+      <div class="grid-3 mt-3">
+        <div class="card">
+          <div class="card-label">Matéria</div>
+          <div class="card-title">Dir. Constitucional</div>
+          <div class="card-body">Princípios fundamentais e direitos individuais.</div>
+          <div class="mt-3"><span class="badge badge-sage">72% concluído</span></div>
+        </div>
+        <div class="card card-accent">
+          <div class="card-label">Em destaque</div>
+          <div class="card-title">Próxima revisão</div>
+          <div class="card-body">Administrativo — Licitações. Prova em 12 dias.</div>
+          <div class="mt-3"><button class="btn btn-secondary btn-sm">Ver conteúdo</button></div>
+        </div>
+        <div class="card card-metric">
+          <div class="metric-label">Acertos no simulado</div>
+          <span class="metric-value">84%</span>
+          <div class="metric-trend trend-up">↑ +6% vs semana passada</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INPUTS -->
+    <section class="ds-section" id="inputs">
+      <div class="sec-title">Inputs</div>
+      <p class="sec-desc">Campos de texto, seleção e área de texto com estados de validação.</p>
+      <div style="max-width:440px" class="mt-3">
+        <div class="field mt-4">
+          <label class="field-label">Nome completo</label>
+          <input class="input" type="text" placeholder="Seu nome completo">
+        </div>
+        <div class="field field-success mt-4">
+          <label class="field-label">Email</label>
+          <input class="input" type="email" value="joao@email.com">
+          <span class="field-hint">Email validado com sucesso</span>
+        </div>
+        <div class="field field-error mt-4">
+          <label class="field-label">Senha</label>
+          <input class="input" type="password" placeholder="Mínimo 8 caracteres">
+          <span class="field-hint">Senha muito curta</span>
+        </div>
+        <div class="field mt-4">
+          <label class="field-label">Matéria</label>
+          <select class="select">
+            <option>Selecionar matéria</option>
+            <option>Direito Constitucional</option>
+            <option>Português</option>
+            <option>Matemática</option>
+          </select>
+        </div>
+        <div class="field mt-4">
+          <label class="field-label">Anotação</label>
+          <textarea class="textarea" placeholder="Escreva seu resumo aqui..."></textarea>
+        </div>
+      </div>
+
+      <div class="group-title">Progresso</div>
+      <div style="max-width:440px">
+        <div class="progress mt-4">
+          <div class="progress-header"><span>Direito Constitucional</span><span>78%</span></div>
+          <div class="progress-track"><div class="progress-fill sage" style="width:78%"></div></div>
+        </div>
+        <div class="progress mt-4">
+          <div class="progress-header"><span>Matemática</span><span>45%</span></div>
+          <div class="progress-track"><div class="progress-fill amber" style="width:45%"></div></div>
+        </div>
+        <div class="progress mt-4">
+          <div class="progress-header"><span>Português</span><span>23%</span></div>
+          <div class="progress-track"><div class="progress-fill clay" style="width:23%"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEEDBACK -->
+    <section class="ds-section" id="feedback">
+      <div class="sec-title">Alertas</div>
+      <p class="sec-desc">Mensagens de feedback para o usuário em 4 variantes semânticas.</p>
+      <div style="max-width:520px" class="mt-3">
+        <div class="alert alert-info mt-3"><div class="alert-icon">ℹ</div><div><strong>Dica de estudo</strong>Revise os pontos errados logo após o simulado.</div></div>
+        <div class="alert alert-success mt-3"><div class="alert-icon">✓</div><div><strong>Meta atingida!</strong>Você estudou 25 horas esta semana.</div></div>
+        <div class="alert alert-warning mt-3"><div class="alert-icon">!</div><div><strong>Atenção</strong>Sua prova está marcada para daqui 7 dias.</div></div>
+        <div class="alert alert-danger mt-3"><div class="alert-icon">✕</div><div><strong>Meta não cumprida</strong>Você não atingiu sua meta de horas esta semana.</div></div>
+      </div>
+    </section>
+
+    <!-- AVATARES -->
+    <section class="ds-section" id="avatares">
+      <div class="sec-title">Avatares</div>
+      <p class="sec-desc">Representação visual de usuários com iniciais ou foto.</p>
+      <div class="comp-box comp-row mt-3">
+        <div class="avatar av-amber">JD</div>
+        <div class="avatar av-sage">MR</div>
+        <div class="avatar av-slate">PL</div>
+        <div class="avatar av-clay">AS</div>
+        <div class="avatar av-ink">CM</div>
+      </div>
+      <div class="group-title">Tamanhos e stack</div>
+      <div class="comp-box comp-row">
+        <div class="avatar avatar-sm av-amber">JD</div>
+        <div class="avatar av-amber">JD</div>
+        <div class="avatar avatar-lg av-amber">JD</div>
+        <div class="avatar-stack" style="margin-left:var(--s4)">
+          <div class="avatar avatar-sm av-amber">JD</div>
+          <div class="avatar avatar-sm av-sage">MR</div>
+          <div class="avatar avatar-sm av-slate">PL</div>
+          <div class="avatar avatar-sm" style="background:var(--cream);color:var(--ink-3)">+4</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TABS E TOGGLE -->
+    <section class="ds-section" id="tabs">
+      <div class="sec-title">Tabs & Toggle</div>
+      <p class="sec-desc">Navegação por abas e controles de alternância.</p>
+
+      <div class="group-title">Tabs</div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="setTab(this)">Resumo</button>
+        <button class="tab-btn" onclick="setTab(this)">Flashcards</button>
+        <button class="tab-btn" onclick="setTab(this)">Simulados</button>
+        <button class="tab-btn" onclick="setTab(this)">Progresso</button>
+      </div>
+
+      <div class="group-title">Toggle</div>
+      <div class="toggle-row"><button class="toggle active" onclick="this.classList.toggle('active')"></button><span class="toggle-label">Notificações ativas</span></div>
+      <div class="toggle-row"><button class="toggle" onclick="this.classList.toggle('active')"></button><span class="toggle-label">Modo escuro</span></div>
+      <div class="toggle-row"><button class="toggle active" onclick="this.classList.toggle('active')"></button><span class="toggle-label">Sincronização automática</span></div>
+
+      <div class="group-title">Tooltip</div>
+      <div class="flex gap-4 mt-3">
+        <div class="tooltip-wrap">
+          <button class="btn btn-secondary">Passe o mouse</button>
+          <div class="tooltip">Dica de contexto</div>
+        </div>
+        <div class="tooltip-wrap">
+          <button class="btn btn-secondary btn-icon">?</button>
+          <div class="tooltip">Mais informações</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOKENS -->
+    <section class="ds-section" id="tokens">
+      <div class="sec-title">CSS Tokens</div>
+      <p class="sec-desc">Copie as variáveis e cole no seu projeto. Clique em qualquer chip para copiar.</p>
+
+      <div class="group-title">Cores</div>
+      <div>
+        <span class="demo-chip" onclick="copyChip('--ink: #1C1814',this)">--ink</span>
+        <span class="demo-chip" onclick="copyChip('--ink-2: #3D3630',this)">--ink-2</span>
+        <span class="demo-chip" onclick="copyChip('--ink-3: #6B6259',this)">--ink-3</span>
+        <span class="demo-chip" onclick="copyChip('--paper: #FAF8F4',this)">--paper</span>
+        <span class="demo-chip" onclick="copyChip('--cream: #F2EDE4',this)">--cream</span>
+        <span class="demo-chip" onclick="copyChip('--mist: #E8E2D8',this)">--mist</span>
+        <span class="demo-chip" onclick="copyChip('--amber: #C97B1A',this)">--amber</span>
+        <span class="demo-chip" onclick="copyChip('--amber-l: #FDF3E0',this)">--amber-l</span>
+        <span class="demo-chip" onclick="copyChip('--amber-d: #8A520E',this)">--amber-d</span>
+        <span class="demo-chip" onclick="copyChip('--sage: #3D6B4F',this)">--sage</span>
+        <span class="demo-chip" onclick="copyChip('--sage-l: #E8F3ED',this)">--sage-l</span>
+        <span class="demo-chip" onclick="copyChip('--clay: #B5472A',this)">--clay</span>
+        <span class="demo-chip" onclick="copyChip('--clay-l: #FAEAE6',this)">--clay-l</span>
+        <span class="demo-chip" onclick="copyChip('--slate: #4A5C72',this)">--slate</span>
+        <span class="demo-chip" onclick="copyChip('--slate-l: #EAF0F7',this)">--slate-l</span>
+      </div>
+
+      <div class="group-title">Tipografia & Espaçamento</div>
+      <div>
+        <span class="demo-chip" onclick="copyChip(\"--f-display: 'Playfair Display', Georgia, serif\",this)">--f-display</span>
+        <span class="demo-chip" onclick="copyChip(\"--f-body: 'DM Sans', system-ui, sans-serif\",this)">--f-body</span>
+        <span class="demo-chip" onclick="copyChip(\"--f-mono: 'DM Mono', monospace\",this)">--f-mono</span>
+        <span class="demo-chip" onclick="copyChip('--s1: 4px',this)">--s1 · 4px</span>
+        <span class="demo-chip" onclick="copyChip('--s2: 8px',this)">--s2 · 8px</span>
+        <span class="demo-chip" onclick="copyChip('--s3: 12px',this)">--s3 · 12px</span>
+        <span class="demo-chip" onclick="copyChip('--s4: 16px',this)">--s4 · 16px</span>
+        <span class="demo-chip" onclick="copyChip('--s5: 24px',this)">--s5 · 24px</span>
+        <span class="demo-chip" onclick="copyChip('--s6: 32px',this)">--s6 · 32px</span>
+        <span class="demo-chip" onclick="copyChip('--s7: 48px',this)">--s7 · 48px</span>
+        <span class="demo-chip" onclick="copyChip('--s8: 64px',this)">--s8 · 64px</span>
+        <span class="demo-chip" onclick="copyChip('--r4: 4px',this)">--r4</span>
+        <span class="demo-chip" onclick="copyChip('--r8: 8px',this)">--r8</span>
+        <span class="demo-chip" onclick="copyChip('--r12: 12px',this)">--r12</span>
+        <span class="demo-chip" onclick="copyChip('--r16: 16px',this)">--r16</span>
+        <span class="demo-chip" onclick="copyChip('--r24: 24px',this)">--r24</span>
+        <span class="demo-chip" onclick="copyChip('--pill: 999px',this)">--pill</span>
+      </div>
+
+      <div class="group-title">Bloco completo — pronto para copiar</div>
+      <div class="code-block">
+<span class="n">:root</span> {
+  <span class="c">/* ── Neutros ── */</span>
+  <span class="k">--ink</span>:     <span class="s">#1C1814</span>;
+  <span class="k">--ink-2</span>:   <span class="s">#3D3630</span>;
+  <span class="k">--ink-3</span>:   <span class="s">#6B6259</span>;
+  <span class="k">--paper</span>:   <span class="s">#FAF8F4</span>;
+  <span class="k">--cream</span>:   <span class="s">#F2EDE4</span>;
+  <span class="k">--mist</span>:    <span class="s">#E8E2D8</span>;
+
+  <span class="c">/* ── Acento ── */</span>
+  <span class="k">--amber</span>:   <span class="s">#C97B1A</span>;
+  <span class="k">--amber-l</span>: <span class="s">#FDF3E0</span>;
+  <span class="k">--amber-d</span>: <span class="s">#8A520E</span>;
+
+  <span class="c">/* ── Semânticas ── */</span>
+  <span class="k">--sage</span>:    <span class="s">#3D6B4F</span>;  <span class="k">--sage-l</span>:  <span class="s">#E8F3ED</span>;
+  <span class="k">--clay</span>:    <span class="s">#B5472A</span>;  <span class="k">--clay-l</span>:  <span class="s">#FAEAE6</span>;
+  <span class="k">--slate</span>:   <span class="s">#4A5C72</span>;  <span class="k">--slate-l</span>: <span class="s">#EAF0F7</span>;
+
+  <span class="c">/* ── Tipografia ── */</span>
+  <span class="k">--f-display</span>: <span class="s">'Playfair Display', Georgia, serif</span>;
+  <span class="k">--f-body</span>:    <span class="s">'DM Sans', system-ui, sans-serif</span>;
+  <span class="k">--f-mono</span>:    <span class="s">'DM Mono', monospace</span>;
+
+  <span class="c">/* ── Espaçamento ── */</span>
+  <span class="k">--s1</span>: <span class="s">4px</span>;  <span class="k">--s2</span>: <span class="s">8px</span>;   <span class="k">--s3</span>: <span class="s">12px</span>; <span class="k">--s4</span>: <span class="s">16px</span>;
+  <span class="k">--s5</span>: <span class="s">24px</span>; <span class="k">--s6</span>: <span class="s">32px</span>;  <span class="k">--s7</span>: <span class="s">48px</span>; <span class="k">--s8</span>: <span class="s">64px</span>;
+
+  <span class="c">/* ── Border radius ── */</span>
+  <span class="k">--r4</span>: <span class="s">4px</span>; <span class="k">--r8</span>: <span class="s">8px</span>; <span class="k">--r12</span>: <span class="s">12px</span>;
+  <span class="k">--r16</span>: <span class="s">16px</span>; <span class="k">--r24</span>: <span class="s">24px</span>; <span class="k">--pill</span>: <span class="s">999px</span>;
+
+  <span class="c">/* ── Sombras ── */</span>
+  <span class="k">--shadow</span>:    <span class="s">0 1px 3px rgba(28,24,20,.08), 0 4px 12px rgba(28,24,20,.06)</span>;
+  <span class="k">--shadow-lg</span>: <span class="s">0 4px 8px rgba(28,24,20,.08), 0 16px 40px rgba(28,24,20,.12)</span>;
+
+  <span class="c">/* ── Transição ── */</span>
+  <span class="k">--transition</span>: <span class="s">all .15s ease</span>;
+}
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+function copySwatch(hex, el) {
+  navigator.clipboard.writeText(hex).catch(() => {});
+  const h = el.querySelector('.swatch-hex');
+  const orig = h.textContent;
+  h.textContent = 'Copiado!';
+  h.style.color = 'var(--sage)';
+  setTimeout(() => { h.textContent = orig; h.style.color = ''; }, 1500);
+}
+
+function copyChip(val, el) {
+  navigator.clipboard.writeText(val + ';').catch(() => {});
+  const orig = el.textContent;
+  el.textContent = 'Copiado!';
+  el.classList.add('copied');
+  setTimeout(() => { el.textContent = orig; el.classList.remove('copied'); }, 1500);
+}
+
+function setTab(btn) {
+  btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Highlight active nav item on scroll
+const sections = document.querySelectorAll('.ds-section');
+const navLinks = document.querySelectorAll('.ds-nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 80) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+}, { passive: true });
+</script>
+
+</body>
+</html>

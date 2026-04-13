@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estude. — Plataforma de Estudos</title>
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1C1814">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Estude.">
+<link rel="apple-touch-icon" href="icons/icon-192.svg">
+<meta name="description" content="Plataforma de estudos para concursos com flashcards, simulados e acompanhamento de desempenho.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@400;500;600&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:     #1C1814;
+  --ink-2:   #3D3630;
+  --ink-3:   #6B6259;
+  --paper:   #FAF8F4;
+  --cream:   #F2EDE4;
+  --mist:    #E8E2D8;
+  --amber:   #C97B1A;
+  --amber-l: #FDF3E0;
+  --amber-m: #F0B84E;
+  --amber-d: #8A520E;
+  --sage:    #3D6B4F;
+  --sage-l:  #E8F3ED;
+  --sage-d:  #254030;
+  --clay:    #B5472A;
+  --clay-l:  #FAEAE6;
+  --clay-d:  #7A2E1A;
+  --slate:   #4A5C72;
+  --slate-l: #EAF0F7;
+  --slate-d: #2C3A48;
+  --f-display: 'Playfair Display', Georgia, serif;
+  --f-body:    'DM Sans', system-ui, sans-serif;
+  --f-mono:    'DM Mono', 'Fira Code', monospace;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+  --r4: 4px; --r8: 8px; --r12: 12px; --r16: 16px; --r24: 24px; --pill: 999px;
+  --shadow:    0 1px 3px rgba(28,24,20,.08), 0 4px 12px rgba(28,24,20,.06);
+  --shadow-lg: 0 4px 8px rgba(28,24,20,.08), 0 16px 40px rgba(28,24,20,.12);
+  --transition: all .15s ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--f-body); font-size: 15px; color: var(--ink); background: var(--paper); line-height: 1.6; }
+
+/* ── Layout ── */
+.app-layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+.sidebar {
+  background: var(--cream); border-right: 1px solid var(--mist); padding: var(--s5);
+  position: fixed; top: 0; left: 0; width: 240px; height: 100vh; overflow-y: auto;
+  display: flex; flex-direction: column; z-index: 100;
+}
+.sidebar-logo { font-family: var(--f-display); font-size: 26px; font-weight: 700; margin-bottom: var(--s1); }
+.sidebar-logo span { color: var(--amber); }
+.sidebar-tagline { font-size: 11px; color: var(--ink-3); margin-bottom: var(--s5); }
+.sidebar-nav { flex: 1; }
+.nav-group { margin-bottom: var(--s4); }
+.nav-label { font-size: 10px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); padding: 0 var(--s3); margin-bottom: var(--s2); display: block; }
+.nav-item {
+  display: flex; align-items: center; gap: var(--s3); padding: 9px var(--s3); border-radius: var(--r8);
+  font-size: 13px; color: var(--ink-3); text-decoration: none; cursor: pointer; transition: var(--transition);
+  font-weight: 400; border: none; background: none; width: 100%; text-align: left; font-family: var(--f-body);
+}
+.nav-item:hover { background: var(--mist); color: var(--ink); }
+.nav-item.active { background: var(--ink); color: var(--paper); }
+.nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+.nav-item .nav-badge { margin-left: auto; background: var(--amber-l); color: var(--amber-d); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: var(--pill); }
+.sidebar-user { display: flex; align-items: center; gap: var(--s3); padding: var(--s3); border-top: 1px solid var(--mist); margin-top: var(--s4); }
+.sidebar-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--amber-l); color: var(--amber-d); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+.sidebar-user-info { flex: 1; min-width: 0; }
+.sidebar-user-name { font-size: 13px; font-weight: 500; }
+.sidebar-user-plan { font-size: 10px; color: var(--ink-3); }
+
+.main-content { margin-left: 240px; min-height: 100vh; }
+.page-header { padding: var(--s5) var(--s6); border-bottom: 1px solid var(--mist); display: flex; align-items: center; justify-content: space-between; background: var(--paper); position: sticky; top: 0; z-index: 50; }
+.page-title { font-family: var(--f-display); font-size: 22px; font-weight: 700; }
+.page-subtitle { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+.header-actions { display: flex; gap: var(--s3); align-items: center; }
+.page-body { padding: var(--s6); }
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── Buttons ── */
+.btn { display: inline-flex; align-items: center; gap: var(--s2); padding: 9px 18px; font-size: 13px; font-family: var(--f-body); font-weight: 500; border-radius: var(--r8); cursor: pointer; border: 1.5px solid transparent; transition: var(--transition); text-decoration: none; line-height: 1; white-space: nowrap; }
+.btn:active { transform: scale(.98); }
+.btn-primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn-primary:hover { background: var(--ink-2); }
+.btn-secondary { background: transparent; color: var(--ink); border-color: var(--mist); }
+.btn-secondary:hover { background: var(--cream); border-color: var(--ink-3); }
+.btn-accent { background: var(--amber); color: white; border-color: var(--amber); }
+.btn-accent:hover { background: var(--amber-d); }
+.btn-ghost { background: transparent; color: var(--ink-3); border-color: transparent; }
+.btn-ghost:hover { background: var(--cream); color: var(--ink); }
+.btn-danger { background: transparent; color: var(--clay); border-color: var(--clay); }
+.btn-danger:hover { background: var(--clay-l); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-lg { padding: 12px 24px; font-size: 15px; border-radius: var(--r12); }
+.btn-icon { width: 36px; height: 36px; padding: 0; justify-content: center; }
+.btn-icon.btn-sm { width: 28px; height: 28px; }
+
+/* ── Cards ── */
+.card { background: white; border: 1px solid var(--mist); border-radius: var(--r16); padding: var(--s5); box-shadow: var(--shadow); transition: var(--transition); }
+.card-clickable { cursor: pointer; }
+.card-clickable:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.card-accent { border-left: 3px solid var(--amber); }
+.card-label { font-size: 10px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); margin-bottom: var(--s2); }
+.card-title { font-family: var(--f-display); font-size: 18px; font-weight: 700; margin-bottom: var(--s1); }
+.card-body { font-size: 13px; color: var(--ink-3); line-height: 1.6; }
+
+/* ── Badges ── */
+.badge { display: inline-flex; align-items: center; gap: var(--s1); padding: 3px 10px; border-radius: var(--pill); font-size: 11px; font-weight: 500; white-space: nowrap; }
+.badge-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.badge-default { background: var(--cream); color: var(--ink-2); }
+.badge-amber { background: var(--amber-l); color: var(--amber-d); }
+.badge-sage { background: var(--sage-l); color: var(--sage-d); }
+.badge-clay { background: var(--clay-l); color: var(--clay-d); }
+.badge-slate { background: var(--slate-l); color: var(--slate-d); }
+.badge-ink { background: var(--ink); color: var(--paper); }
+
+/* ── Progress ── */
+.progress { display: flex; flex-direction: column; gap: var(--s2); }
+.progress-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-2); }
+.progress-track { height: 6px; background: var(--cream); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; transition: width .6s cubic-bezier(.4, 0, .2, 1); }
+.progress-fill.sage { background: var(--sage); }
+.progress-fill.amber { background: var(--amber); }
+.progress-fill.clay { background: var(--clay); }
+.progress-fill.slate { background: var(--slate); }
+
+/* ── Alerts ── */
+.alert { display: flex; gap: var(--s3); padding: var(--s3) var(--s4); border-radius: var(--r12); font-size: 13px; line-height: 1.5; }
+.alert-icon { flex-shrink: 0; font-size: 15px; line-height: 1.4; }
+.alert strong { font-weight: 500; display: block; margin-bottom: 2px; }
+.alert-info { background: var(--slate-l); color: var(--slate-d); }
+.alert-success { background: var(--sage-l); color: var(--sage-d); }
+.alert-warning { background: var(--amber-l); color: var(--amber-d); }
+.alert-danger { background: var(--clay-l); color: var(--clay-d); }
+
+/* ── Inputs ── */
+.field { display: flex; flex-direction: column; gap: var(--s2); }
+.field-label { font-size: 12px; font-weight: 500; color: var(--ink-2); }
+.input, .select, .textarea { padding: 9px 13px; font-size: 13px; font-family: var(--f-body); border: 1.5px solid var(--mist); border-radius: var(--r8); background: white; color: var(--ink); outline: none; transition: border-color .15s; width: 100%; }
+.input:hover, .select:hover { border-color: var(--ink-3); }
+.input:focus, .select:focus, .textarea:focus { border-color: var(--amber); }
+.textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+/* ── Tabs ── */
+.tabs { display: flex; gap: 2px; padding: 4px; background: var(--cream); border-radius: var(--r12); width: fit-content; }
+.tab-btn { padding: 7px 16px; font-size: 12px; font-weight: 500; font-family: var(--f-body); border: none; background: none; cursor: pointer; border-radius: var(--r8); color: var(--ink-3); transition: var(--transition); }
+.tab-btn:hover { color: var(--ink); }
+.tab-btn.active { background: white; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+
+/* ── Toggle ── */
+.toggle { width: 40px; height: 22px; background: var(--mist); border-radius: 11px; cursor: pointer; position: relative; border: none; transition: background .2s; flex-shrink: 0; }
+.toggle.active { background: var(--ink); }
+.toggle::after { content: ''; width: 16px; height: 16px; background: white; border-radius: 50%; position: absolute; top: 3px; left: 3px; transition: left .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.toggle.active::after { left: 21px; }
+
+/* ── Modal ── */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(28,24,20,.4); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.modal-backdrop.open { display: flex; }
+.modal { background: var(--paper); border-radius: var(--r24); box-shadow: var(--shadow-lg); max-width: 540px; width: 90%; padding: var(--s6); animation: modalIn .2s ease; max-height: 90vh; overflow-y: auto; }
+@keyframes modalIn { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.modal-title { font-family: var(--f-display); font-size: 22px; font-weight: 700; margin-bottom: var(--s4); }
+
+/* ── Metrics ── */
+.metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s4); margin-bottom: var(--s6); }
+.metric-card { background: white; border: 1px solid var(--mist); border-radius: var(--r16); padding: var(--s5); box-shadow: var(--shadow); }
+.metric-card .metric-icon { width: 40px; height: 40px; border-radius: var(--r12); display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: var(--s3); }
+.metric-card .metric-value { font-family: var(--f-display); font-size: 32px; font-weight: 700; line-height: 1; }
+.metric-card .metric-label { font-size: 12px; color: var(--ink-3); margin-top: var(--s2); }
+.metric-card .metric-trend { font-size: 11px; font-weight: 500; margin-top: var(--s2); display: flex; align-items: center; gap: var(--s1); }
+.trend-up { color: var(--sage); }
+.trend-down { color: var(--clay); }
+.dashboard-grid { display: grid; grid-template-columns: 1fr 340px; gap: var(--s5); }
+
+/* ── Subject cards ── */
+.subject-card { background: white; border: 1px solid var(--mist); border-radius: var(--r16); padding: var(--s4); display: flex; align-items: center; gap: var(--s4); cursor: pointer; transition: var(--transition); box-shadow: var(--shadow); }
+.subject-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
+.subject-icon { width: 48px; height: 48px; border-radius: var(--r12); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.subject-info { flex: 1; min-width: 0; }
+.subject-name { font-weight: 500; font-size: 14px; }
+.subject-meta { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+.subject-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--s4); }
+.subject-full-card { background: white; border: 1px solid var(--mist); border-radius: var(--r16); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); }
+.subject-full-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.subject-full-header { padding: var(--s5); display: flex; align-items: center; gap: var(--s4); }
+.subject-full-body { padding: 0 var(--s5) var(--s5); }
+.subject-topics { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s3); }
+.topic-chip { font-size: 11px; padding: 3px 10px; border-radius: var(--pill); background: var(--cream); color: var(--ink-3); }
+.subject-actions { display: flex; gap: var(--s2); margin-top: var(--s3); }
+
+/* ── Week chart ── */
+.week-chart { display: flex; align-items: flex-end; gap: var(--s2); height: 120px; padding-top: var(--s4); }
+.week-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--s2); height: 100%; }
+.week-bar-track { flex: 1; width: 100%; display: flex; align-items: flex-end; }
+.week-bar { width: 100%; border-radius: 4px 4px 0 0; transition: height .6s cubic-bezier(.4,0,.2,1); min-height: 4px; }
+.week-label { font-size: 10px; color: var(--ink-3); font-weight: 500; }
+.week-hours { font-size: 10px; font-family: var(--f-mono); color: var(--ink-3); }
+
+/* ── Activity ── */
+.activity-item { display: flex; gap: var(--s3); padding: var(--s3) 0; border-bottom: 1px solid var(--mist); align-items: flex-start; }
+.activity-item:last-child { border-bottom: none; }
+.activity-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+.activity-text { font-size: 13px; }
+.activity-time { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+
+/* ── Subject detail ── */
+.subject-detail-header { display: flex; align-items: center; gap: var(--s4); margin-bottom: var(--s5); }
+.subject-detail-icon { width: 64px; height: 64px; border-radius: var(--r16); display: flex; align-items: center; justify-content: center; font-size: 30px; flex-shrink: 0; }
+.back-btn { display: inline-flex; align-items: center; gap: var(--s2); font-size: 13px; color: var(--ink-3); cursor: pointer; border: none; background: none; font-family: var(--f-body); padding: var(--s2) 0; margin-bottom: var(--s4); transition: var(--transition); }
+.back-btn:hover { color: var(--ink); }
+.content-item { background: white; border: 1px solid var(--mist); border-radius: var(--r12); padding: var(--s4); margin-bottom: var(--s3); display: flex; align-items: flex-start; gap: var(--s3); transition: var(--transition); }
+.content-item:hover { border-color: var(--ink-3); }
+.content-item-body { flex: 1; }
+.content-item-title { font-weight: 500; font-size: 14px; margin-bottom: 2px; }
+.content-item-desc { font-size: 12px; color: var(--ink-3); line-height: 1.5; }
+.content-item-actions { display: flex; gap: var(--s2); flex-shrink: 0; }
+
+/* ── Flashcards ── */
+.flashcard-container { max-width: 600px; margin: 0 auto; }
+.flashcard { background: white; border: 1px solid var(--mist); border-radius: var(--r24); box-shadow: var(--shadow-lg); min-height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--s7); text-align: center; cursor: pointer; position: relative; }
+.flashcard-label { position: absolute; top: var(--s5); left: var(--s5); font-size: 10px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.flashcard-counter { position: absolute; top: var(--s5); right: var(--s5); font-size: 12px; font-family: var(--f-mono); color: var(--ink-3); }
+.flashcard-question { font-family: var(--f-display); font-size: 22px; font-weight: 700; line-height: 1.4; max-width: 440px; }
+.flashcard-answer { font-size: 16px; color: var(--ink-2); line-height: 1.6; max-width: 440px; display: none; }
+.flashcard.flipped .flashcard-question { display: none; }
+.flashcard.flipped .flashcard-answer { display: block; }
+.flashcard.flipped .flashcard-label { color: var(--amber); }
+.flashcard-hint { font-size: 12px; color: var(--ink-3); margin-top: var(--s4); }
+.flashcard.flipped .flashcard-hint { display: none; }
+.flashcard-actions { display: flex; gap: var(--s3); justify-content: center; margin-top: var(--s5); }
+.fc-btn { padding: 12px 28px; border-radius: var(--r12); font-size: 13px; font-weight: 500; font-family: var(--f-body); border: 1.5px solid; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: var(--s2); }
+.fc-btn:active { transform: scale(.96); }
+.fc-easy { background: var(--sage-l); color: var(--sage-d); border-color: var(--sage-l); }
+.fc-easy:hover { background: var(--sage); color: white; }
+.fc-medium { background: var(--amber-l); color: var(--amber-d); border-color: var(--amber-l); }
+.fc-medium:hover { background: var(--amber); color: white; }
+.fc-hard { background: var(--clay-l); color: var(--clay-d); border-color: var(--clay-l); }
+.fc-hard:hover { background: var(--clay); color: white; }
+
+/* ── Quiz ── */
+.quiz-container { max-width: 680px; }
+.quiz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s5); }
+.quiz-timer { display: flex; align-items: center; gap: var(--s2); font-family: var(--f-mono); font-size: 18px; font-weight: 500; color: var(--ink); background: white; padding: 8px 16px; border-radius: var(--r12); border: 1px solid var(--mist); }
+.quiz-question-card { background: white; border: 1px solid var(--mist); border-radius: var(--r16); padding: var(--s6); box-shadow: var(--shadow); margin-bottom: var(--s5); }
+.quiz-question-num { font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--amber); margin-bottom: var(--s3); }
+.quiz-question-text { font-size: 16px; line-height: 1.6; margin-bottom: var(--s5); }
+.quiz-options { display: flex; flex-direction: column; gap: var(--s3); }
+.quiz-option { display: flex; align-items: flex-start; gap: var(--s3); padding: var(--s4); border: 1.5px solid var(--mist); border-radius: var(--r12); cursor: pointer; transition: var(--transition); font-size: 14px; line-height: 1.5; }
+.quiz-option:hover { border-color: var(--ink-3); background: var(--cream); }
+.quiz-option.selected { border-color: var(--amber); background: var(--amber-l); }
+.quiz-option.correct { border-color: var(--sage); background: var(--sage-l); }
+.quiz-option.wrong { border-color: var(--clay); background: var(--clay-l); }
+.quiz-option-letter { width: 28px; height: 28px; border-radius: 50%; background: var(--cream); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+.quiz-option.selected .quiz-option-letter { background: var(--amber); color: white; }
+.quiz-option.correct .quiz-option-letter { background: var(--sage); color: white; }
+.quiz-option.wrong .quiz-option-letter { background: var(--clay); color: white; }
+.quiz-explanation { margin-top: var(--s4); padding: var(--s4); background: var(--slate-l); border-radius: var(--r12); font-size: 13px; color: var(--slate-d); line-height: 1.6; display: none; }
+.quiz-explanation.visible { display: block; }
+.quiz-result { text-align: center; padding: var(--s7); display: none; }
+.quiz-result.visible { display: block; }
+
+/* ── Notes ── */
+.notes-layout { display: grid; grid-template-columns: 260px 1fr; gap: var(--s5); min-height: 60vh; }
+.notes-list { border-right: 1px solid var(--mist); padding-right: var(--s5); }
+.note-item { padding: var(--s3) var(--s4); border-radius: var(--r12); cursor: pointer; transition: var(--transition); margin-bottom: var(--s2); }
+.note-item:hover { background: var(--cream); }
+.note-item.active { background: var(--ink); color: var(--paper); }
+.note-item-title { font-size: 13px; font-weight: 500; }
+.note-item-date { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+.note-item.active .note-item-date { color: var(--mist); }
+.note-editor-title { font-family: var(--f-display); font-size: 22px; font-weight: 700; border: none; outline: none; background: none; color: var(--ink); width: 100%; padding: 0; }
+.note-editor-body { flex: 1; border: none; outline: none; font-family: var(--f-body); font-size: 15px; line-height: 1.8; color: var(--ink); resize: none; min-height: 400px; background: none; }
+
+/* ── Cronograma ── */
+.schedule-grid { display: grid; grid-template-columns: 100px repeat(7, 1fr); gap: 2px; background: var(--mist); border-radius: var(--r16); overflow: hidden; border: 1px solid var(--mist); }
+.schedule-cell { background: white; padding: var(--s3); text-align: center; font-size: 12px; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+.schedule-header { background: var(--cream); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-2); min-height: auto; padding: var(--s3); }
+.schedule-time-label { background: var(--cream); font-family: var(--f-mono); font-size: 11px; color: var(--ink-3); justify-content: flex-end; padding-right: var(--s4); }
+.schedule-cell.has-study { background: var(--amber-l); color: var(--amber-d); font-weight: 500; cursor: pointer; border-radius: 0; }
+.schedule-cell.has-study:hover { background: var(--amber-m); }
+.schedule-cell.editable { cursor: pointer; }
+.schedule-cell.editable:hover { background: var(--cream); }
+
+.day-config { background: white; border: 1px solid var(--mist); border-radius: var(--r16); padding: var(--s5); display: flex; align-items: center; justify-content: space-between; }
+.day-config-info { display: flex; align-items: center; gap: var(--s4); }
+.day-config-name { font-weight: 500; font-size: 14px; }
+.day-config-sub { font-size: 12px; color: var(--ink-3); }
+.day-hours-control { display: flex; align-items: center; gap: var(--s3); }
+.hours-btn { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--mist); background: white; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: var(--transition); font-family: var(--f-body); color: var(--ink); }
+.hours-btn:hover { background: var(--cream); border-color: var(--ink-3); }
+.hours-value { font-family: var(--f-display); font-size: 24px; font-weight: 700; width: 50px; text-align: center; }
+.hours-unit { font-size: 11px; color: var(--ink-3); }
+
+/* ── Pomodoro ── */
+.pomodoro-container { max-width: 480px; margin: 0 auto; text-align: center; }
+.pomodoro-circle {
+  width: 280px; height: 280px; border-radius: 50%; margin: var(--s6) auto;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: relative; background: white; box-shadow: var(--shadow-lg);
+}
+.pomodoro-ring {
+  position: absolute; inset: -6px; border-radius: 50%;
+  background: conic-gradient(var(--amber) var(--pomo-progress, 0%), var(--cream) 0%);
+  z-index: 0;
+}
+.pomodoro-inner {
+  position: relative; z-index: 1; width: calc(100% - 12px); height: calc(100% - 12px);
+  border-radius: 50%; background: white; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.pomodoro-time { font-family: var(--f-display); font-size: 56px; font-weight: 700; line-height: 1; }
+.pomodoro-label { font-size: 13px; color: var(--ink-3); margin-top: var(--s2); }
+.pomodoro-controls { display: flex; gap: var(--s3); justify-content: center; margin-top: var(--s5); }
+.pomodoro-sessions { display: flex; gap: var(--s2); justify-content: center; margin-top: var(--s5); }
+.pomo-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--cream); border: 1.5px solid var(--mist); }
+.pomo-dot.completed { background: var(--amber); border-color: var(--amber); }
+.pomo-dot.active { background: var(--amber-l); border-color: var(--amber); }
+.pomo-settings { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s4); margin-top: var(--s6); text-align: center; }
+.pomo-setting-value { font-family: var(--f-display); font-size: 28px; font-weight: 700; }
+.pomo-setting-label { font-size: 11px; color: var(--ink-3); margin-top: var(--s1); }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); } .dashboard-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px) {
+  .app-layout { grid-template-columns: 1fr; }
+  .sidebar { transform: translateX(-100%); transition: transform .25s ease; }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; }
+  .metrics-grid { grid-template-columns: 1fr 1fr; }
+  .notes-layout { grid-template-columns: 1fr; }
+  .page-header { padding: var(--s4); }
+  .page-body { padding: var(--s4); }
+  .mobile-menu-btn { display: flex !important; }
+  .schedule-grid { font-size: 10px; }
+}
+.mobile-menu-btn { display: none; width: 36px; height: 36px; align-items: center; justify-content: center; border-radius: var(--r8); border: 1.5px solid var(--mist); background: white; cursor: pointer; font-size: 18px; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn .3s ease; }
+</style>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ═══════ SIDEBAR ═══════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">Estude<span>.</span></div>
+    <div class="sidebar-tagline">Plataforma de Estudos</div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <span class="nav-label">Principal</span>
+        <button class="nav-item active" data-page="dashboard" onclick="navigate('dashboard',this)">
+          <span class="nav-icon">◉</span> Dashboard
+        </button>
+        <button class="nav-item" data-page="materias" onclick="navigate('materias',this)">
+          <span class="nav-icon">◈</span> Matérias
+        </button>
+        <button class="nav-item" data-page="cronograma" onclick="navigate('cronograma',this)">
+          <span class="nav-icon">▦</span> Cronograma
+        </button>
+        <button class="nav-item" data-page="pomodoro" onclick="navigate('pomodoro',this)">
+          <span class="nav-icon">◔</span> Pomodoro
+        </button>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Estudo</span>
+        <button class="nav-item" data-page="flashcards" onclick="navigate('flashcards',this)">
+          <span class="nav-icon">◇</span> Flashcards
+          <span class="nav-badge">12</span>
+        </button>
+        <button class="nav-item" data-page="simulado" onclick="navigate('simulado',this)">
+          <span class="nav-icon">▣</span> Simulado
+        </button>
+        <button class="nav-item" data-page="notas" onclick="navigate('notas',this)">
+          <span class="nav-icon">▤</span> Notas
+        </button>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Pessoal</span>
+        <button class="nav-item" data-page="desempenho" onclick="navigate('desempenho',this)">
+          <span class="nav-icon">◔</span> Desempenho
+        </button>
+        <button class="nav-item" data-page="config" onclick="navigate('config',this)">
+          <span class="nav-icon">⚙</span> Configurações
+        </button>
+      </div>
+    </nav>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">AS</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name">Artur Silva</div>
+        <div class="sidebar-user-plan">Plano Pro</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════ MAIN ═══════ -->
+  <div class="main-content">
+    <header class="page-header">
+      <div>
+        <button class="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <div class="page-title" id="page-title">Dashboard</div>
+        <div class="page-subtitle" id="page-subtitle">Sua plataforma de estudos</div>
+      </div>
+      <div class="header-actions" id="headerActions"></div>
+    </header>
+
+    <!-- ══════ DASHBOARD ══════ -->
+    <div class="page active fade-in" id="page-dashboard">
+      <div class="page-body">
+        <div style="margin-bottom:var(--s6)">
+          <div style="font-family:var(--f-display);font-size:28px;font-weight:700;margin-bottom:var(--s2)">Bom dia, Artur 🔥</div>
+          <div style="color:var(--ink-3);font-size:14px">Você está em uma sequência de <strong style="color:var(--amber)">14 dias</strong> de estudo.</div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-icon" style="background:var(--amber-l);color:var(--amber)">📖</div><span class="metric-value">47h</span><div class="metric-label">Horas este mês</div><div class="metric-trend trend-up">↑ +12%</div></div>
+          <div class="metric-card"><div class="metric-icon" style="background:var(--sage-l);color:var(--sage)">✓</div><span class="metric-value">84%</span><div class="metric-label">Taxa de acerto</div><div class="metric-trend trend-up">↑ +6%</div></div>
+          <div class="metric-card"><div class="metric-icon" style="background:var(--slate-l);color:var(--slate)">◇</div><span class="metric-value">238</span><div class="metric-label">Flashcards revisados</div><div class="metric-trend trend-up">↑ +34 hoje</div></div>
+          <div class="metric-card"><div class="metric-icon" style="background:var(--clay-l);color:var(--clay)">▣</div><span class="metric-value">12</span><div class="metric-label">Simulados completos</div><div class="metric-trend trend-up">↑ +2</div></div>
+        </div>
+        <div class="dashboard-grid">
+          <div>
+            <div class="card" style="margin-bottom:var(--s5)">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--s4)">
+                <div><div class="card-label">Esta semana</div><div style="font-family:var(--f-display);font-size:20px;font-weight:700">Horas de Estudo</div></div>
+                <div class="badge badge-sage"><span class="badge-dot" style="background:var(--sage)"></span>Meta: 25h</div>
+              </div>
+              <div class="week-chart" id="weekChart"></div>
+            </div>
+            <div class="card">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--s5)">
+                <div><div class="card-label">Progresso</div><div style="font-family:var(--f-display);font-size:20px;font-weight:700">Matérias</div></div>
+                <button class="btn btn-ghost btn-sm" onclick="navigate('materias',document.querySelector('[data-page=materias]'))">Ver todas →</button>
+              </div>
+              <div id="dashSubjects"></div>
+            </div>
+          </div>
+          <div>
+            <div class="card card-accent" style="margin-bottom:var(--s5)">
+              <div class="card-label">Plano de hoje</div>
+              <div class="card-title">3 tarefas pendentes</div>
+              <div style="margin-top:var(--s4);display:flex;flex-direction:column;gap:var(--s3)" id="todayTasks"></div>
+            </div>
+            <div class="card" style="margin-bottom:var(--s5)">
+              <div class="card-label">Atividade recente</div>
+              <div style="margin-top:var(--s3)" id="activityFeed"></div>
+            </div>
+            <div class="alert alert-warning"><div class="alert-icon">!</div><div><strong>Próxima revisão</strong>Dir. Administrativo — Licitações em 2 horas</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ MATERIAS ══════ -->
+    <div class="page" id="page-materias">
+      <div class="page-body fade-in">
+        <div id="materiasListView">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s5)">
+            <div>
+              <div style="font-family:var(--f-display);font-size:24px;font-weight:700">Suas Matérias</div>
+              <div style="color:var(--ink-3);font-size:13px;margin-top:4px" id="materiasCount"></div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openSubjectModal()">+ Adicionar matéria</button>
+          </div>
+          <div class="subject-grid" id="subjectGrid"></div>
+        </div>
+        <div id="materiasDetailView" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- ══════ CRONOGRAMA ══════ -->
+    <div class="page" id="page-cronograma">
+      <div class="page-body fade-in">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s5)">
+          <div>
+            <div style="font-family:var(--f-display);font-size:24px;font-weight:700">Cronograma Semanal</div>
+            <div style="color:var(--ink-3);font-size:13px;margin-top:4px">Defina quantas horas estudar em cada dia</div>
+          </div>
+          <div id="cronogramaTotalWeek" style="font-family:var(--f-display);font-size:20px;font-weight:700;color:var(--amber)"></div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:var(--s3);margin-bottom:var(--s6)" id="scheduleConfigs"></div>
+
+        <div class="card" style="margin-bottom:var(--s5)">
+          <div class="card-label">Visão da semana</div>
+          <div style="font-family:var(--f-display);font-size:18px;font-weight:700;margin-bottom:var(--s4)">Distribuição de Horas</div>
+          <div class="week-chart" id="scheduleChart" style="height:150px"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Matérias por dia</div>
+          <div style="font-family:var(--f-display);font-size:18px;font-weight:700;margin-bottom:var(--s4)">Distribuir Matérias</div>
+          <p style="font-size:13px;color:var(--ink-3);margin-bottom:var(--s4)">Selecione quais matérias estudar em cada dia da semana.</p>
+          <div id="scheduleSubjectGrid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ POMODORO ══════ -->
+    <div class="page" id="page-pomodoro">
+      <div class="page-body fade-in">
+        <div class="pomodoro-container">
+          <div style="font-family:var(--f-display);font-size:24px;font-weight:700;margin-bottom:var(--s2)">Pomodoro</div>
+          <div class="tabs" style="margin:0 auto var(--s4);width:fit-content">
+            <button class="tab-btn active" onclick="setPomoMode('work',this)">Foco</button>
+            <button class="tab-btn" onclick="setPomoMode('short',this)">Pausa Curta</button>
+            <button class="tab-btn" onclick="setPomoMode('long',this)">Pausa Longa</button>
+          </div>
+
+          <div class="pomodoro-circle">
+            <div class="pomodoro-ring" id="pomoRing"></div>
+            <div class="pomodoro-inner">
+              <div class="pomodoro-time" id="pomoTime">25:00</div>
+              <div class="pomodoro-label" id="pomoLabel">Foco</div>
+            </div>
+          </div>
+
+          <div class="pomodoro-controls">
+            <button class="btn btn-accent btn-lg" id="pomoStartBtn" onclick="togglePomodoro()">Iniciar</button>
+            <button class="btn btn-secondary" onclick="resetPomodoro()">Resetar</button>
+          </div>
+
+          <div class="pomodoro-sessions" id="pomoSessions"></div>
+
+          <div class="pomo-settings">
+            <div class="card" style="padding:var(--s4)">
+              <div class="pomo-setting-value" id="pomoWorkVal">25</div>
+              <div class="pomo-setting-label">min foco</div>
+              <div style="display:flex;gap:var(--s2);justify-content:center;margin-top:var(--s3)">
+                <button class="hours-btn" onclick="adjustPomo('work',-5)">−</button>
+                <button class="hours-btn" onclick="adjustPomo('work',5)">+</button>
+              </div>
+            </div>
+            <div class="card" style="padding:var(--s4)">
+              <div class="pomo-setting-value" id="pomoShortVal">5</div>
+              <div class="pomo-setting-label">min pausa curta</div>
+              <div style="display:flex;gap:var(--s2);justify-content:center;margin-top:var(--s3)">
+                <button class="hours-btn" onclick="adjustPomo('short',-1)">−</button>
+                <button class="hours-btn" onclick="adjustPomo('short',1)">+</button>
+              </div>
+            </div>
+            <div class="card" style="padding:var(--s4)">
+              <div class="pomo-setting-value" id="pomoLongVal">15</div>
+              <div class="pomo-setting-label">min pausa longa</div>
+              <div style="display:flex;gap:var(--s2);justify-content:center;margin-top:var(--s3)">
+                <button class="hours-btn" onclick="adjustPomo('long',-5)">−</button>
+                <button class="hours-btn" onclick="adjustPomo('long',5)">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:var(--s5);text-align:left">
+            <div class="card-label">Sessão atual</div>
+            <div class="field" style="margin-bottom:var(--s3)">
+              <label class="field-label">Estudando</label>
+              <select class="select" id="pomoSubjectSelect"></select>
+            </div>
+            <div style="display:flex;gap:var(--s4);font-size:13px;color:var(--ink-3)">
+              <span>Sessões hoje: <strong style="color:var(--ink)" id="pomoTodayCount">0</strong></span>
+              <span>Tempo total: <strong style="color:var(--ink)" id="pomoTodayTime">0min</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ FLASHCARDS ══════ -->
+    <div class="page" id="page-flashcards">
+      <div class="page-body fade-in">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s5)">
+          <div class="tabs"><button class="tab-btn active" onclick="setFcFilter('all',this)">Todos</button><button class="tab-btn" onclick="setFcFilter('review',this)">Para revisar</button><button class="tab-btn" onclick="setFcFilter('new',this)">Novos</button></div>
+          <span style="font-size:12px;color:var(--ink-3)" id="fcCount"></span>
+        </div>
+        <div class="flashcard-container" id="flashcardArea">
+          <div class="flashcard" id="flashcard" onclick="flipCard()">
+            <div class="flashcard-label" id="fcLabel">Pergunta</div>
+            <div class="flashcard-counter" id="fcCounter">1/12</div>
+            <div class="flashcard-question" id="fcQuestion"></div>
+            <div class="flashcard-answer" id="fcAnswer"></div>
+            <div class="flashcard-hint">Clique para ver a resposta</div>
+          </div>
+          <div class="flashcard-actions" id="fcActions" style="display:none">
+            <button class="fc-btn fc-hard" onclick="rateCard('hard')">Difícil</button>
+            <button class="fc-btn fc-medium" onclick="rateCard('medium')">Médio</button>
+            <button class="fc-btn fc-easy" onclick="rateCard('easy')">Fácil</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ SIMULADO ══════ -->
+    <div class="page" id="page-simulado">
+      <div class="page-body fade-in">
+        <div id="quizStart">
+          <div style="max-width:600px">
+            <div style="font-family:var(--f-display);font-size:24px;font-weight:700;margin-bottom:var(--s2)">Simulado</div>
+            <p style="color:var(--ink-3);font-size:14px;margin-bottom:var(--s5)">Teste seus conhecimentos com questões no estilo concurso.</p>
+            <div class="field" style="margin-bottom:var(--s4)"><label class="field-label">Matéria</label><select class="select" id="quizSubjectSelect"><option value="all">Todas as matérias</option></select></div>
+            <div class="field" style="margin-bottom:var(--s5)"><label class="field-label">Quantidade</label><select class="select" id="quizCountSelect"><option value="5">5 questões</option><option value="10" selected>10 questões</option><option value="20">20 questões</option></select></div>
+            <button class="btn btn-accent btn-lg" onclick="startQuiz()">Iniciar simulado →</button>
+          </div>
+        </div>
+        <div id="quizActive" style="display:none">
+          <div class="quiz-container">
+            <div class="quiz-header">
+              <div class="progress" style="width:300px"><div class="progress-header"><span id="quizProgressText">Questão 1 de 10</span><span id="quizProgressPct">0%</span></div><div class="progress-track"><div class="progress-fill amber" id="quizProgressBar" style="width:0%"></div></div></div>
+              <div class="quiz-timer" id="quizTimer">00:00</div>
+            </div>
+            <div id="quizQuestionArea"></div>
+            <div style="display:flex;justify-content:space-between;margin-top:var(--s4)">
+              <button class="btn btn-ghost" id="quizCheckBtn" onclick="checkAnswer()" style="display:none">Verificar</button>
+              <button class="btn btn-primary" id="quizNextBtn" onclick="nextQuestion()" style="display:none">Próxima →</button>
+            </div>
+          </div>
+        </div>
+        <div class="quiz-result" id="quizResult">
+          <div class="quiz-question-card" style="max-width:500px;margin:0 auto;text-align:center">
+            <div style="font-size:48px;margin-bottom:var(--s4)">🎉</div>
+            <div style="font-family:var(--f-display);font-size:64px;font-weight:700" id="quizScoreValue"></div>
+            <div style="font-size:16px;color:var(--ink-3);margin-bottom:var(--s5)" id="quizScoreLabel"></div>
+            <div style="display:flex;gap:var(--s4);justify-content:center">
+              <div><div style="font-family:var(--f-display);font-size:24px;font-weight:700;color:var(--sage)" id="quizCorrectCount">0</div><div style="font-size:11px;color:var(--ink-3)">Corretas</div></div>
+              <div><div style="font-family:var(--f-display);font-size:24px;font-weight:700;color:var(--clay)" id="quizWrongCount">0</div><div style="font-size:11px;color:var(--ink-3)">Erradas</div></div>
+              <div><div style="font-family:var(--f-display);font-size:24px;font-weight:700;color:var(--slate)" id="quizTimeResult">0:00</div><div style="font-size:11px;color:var(--ink-3)">Tempo</div></div>
+            </div>
+            <div style="margin-top:var(--s6);display:flex;gap:var(--s3);justify-content:center">
+              <button class="btn btn-secondary" onclick="resetQuiz()">Voltar</button>
+              <button class="btn btn-accent" onclick="resetQuiz();startQuiz()">Novo simulado</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ NOTAS ══════ -->
+    <div class="page" id="page-notas">
+      <div class="page-body fade-in">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s5)">
+          <div style="font-family:var(--f-display);font-size:24px;font-weight:700">Notas</div>
+          <button class="btn btn-primary btn-sm" onclick="addNote()">+ Nova nota</button>
+        </div>
+        <div class="notes-layout">
+          <div class="notes-list" id="notesList"></div>
+          <div style="display:flex;flex-direction:column;gap:var(--s4)">
+            <input class="note-editor-title" id="noteTitle" placeholder="Título da nota" oninput="saveCurrentNote()">
+            <textarea class="note-editor-body" id="noteBody" placeholder="Comece a escrever..." oninput="saveCurrentNote()"></textarea>
+            <div style="display:flex;gap:var(--s3);align-items:center">
+              <span class="badge badge-default" id="noteSubjectBadge">Geral</span>
+              <span style="font-size:11px;color:var(--ink-3)" id="noteDate"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ DESEMPENHO ══════ -->
+    <div class="page" id="page-desempenho">
+      <div class="page-body fade-in">
+        <div style="font-family:var(--f-display);font-size:24px;font-weight:700;margin-bottom:var(--s5)">Desempenho</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4);margin-bottom:var(--s6)">
+          <div class="card" style="text-align:center"><div style="font-size:36px;margin-bottom:var(--s2)">🔥</div><div style="font-family:var(--f-display);font-size:36px;font-weight:700">14</div><div style="font-size:13px;color:var(--ink-3)">Dias de sequência</div></div>
+          <div class="card" style="text-align:center"><div style="font-size:36px;margin-bottom:var(--s2)">📊</div><div style="font-family:var(--f-display);font-size:36px;font-weight:700">84%</div><div style="font-size:13px;color:var(--ink-3)">Média de acertos</div></div>
+          <div class="card" style="text-align:center"><div style="font-size:36px;margin-bottom:var(--s2)">⏱</div><div style="font-family:var(--f-display);font-size:36px;font-weight:700">127h</div><div style="font-size:13px;color:var(--ink-3)">Total de estudo</div></div>
+        </div>
+        <div class="card" style="margin-bottom:var(--s5)">
+          <div class="card-label">Últimos 30 dias</div>
+          <div style="font-family:var(--f-display);font-size:20px;font-weight:700;margin-bottom:var(--s4)">Calendário de Estudo</div>
+          <div id="heatmapCalendar" style="display:flex;flex-wrap:wrap;gap:3px"></div>
+        </div>
+        <div class="card">
+          <div class="card-label">Por matéria</div>
+          <div style="font-family:var(--f-display);font-size:20px;font-weight:700;margin-bottom:var(--s5)">Taxa de Acerto</div>
+          <div id="performanceBySubject" style="display:flex;flex-direction:column;gap:var(--s4)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ CONFIG ══════ -->
+    <div class="page" id="page-config">
+      <div class="page-body fade-in">
+        <div style="font-family:var(--f-display);font-size:24px;font-weight:700;margin-bottom:var(--s5)">Configurações</div>
+        <div class="card" style="max-width:560px;margin-bottom:var(--s5)">
+          <div style="font-weight:500;font-size:15px;margin-bottom:var(--s4)">Perfil</div>
+          <div class="field" style="margin-bottom:var(--s4)"><label class="field-label">Nome</label><input class="input" value="Artur Silva"></div>
+          <div class="field" style="margin-bottom:var(--s4)"><label class="field-label">Email</label><input class="input" type="email" value="artur@email.com"></div>
+          <div class="field" style="margin-bottom:var(--s4)"><label class="field-label">Concurso-alvo</label><select class="select"><option>Concurso Federal</option><option>OAB</option><option selected>Magistratura</option><option>Ministério Público</option></select></div>
+          <button class="btn btn-primary btn-sm">Salvar alterações</button>
+        </div>
+        <div class="card" style="max-width:560px;margin-bottom:var(--s5)">
+          <div style="font-weight:500;font-size:15px;margin-bottom:var(--s4)">Preferências</div>
+          <div style="display:flex;align-items:center;gap:var(--s3);margin-bottom:var(--s4)"><button class="toggle active" onclick="this.classList.toggle('active')"></button><span style="font-size:13px">Lembrete diário</span></div>
+          <div style="display:flex;align-items:center;gap:var(--s3);margin-bottom:var(--s4)"><button class="toggle active" onclick="this.classList.toggle('active')"></button><span style="font-size:13px">Revisão espaçada automática</span></div>
+          <div style="display:flex;align-items:center;gap:var(--s3);margin-bottom:var(--s4)"><button class="toggle" onclick="this.classList.toggle('active')"></button><span style="font-size:13px">Modo escuro</span></div>
+        </div>
+        <div class="card" style="max-width:560px">
+          <div style="font-weight:500;font-size:15px;margin-bottom:var(--s4)">Conta</div>
+          <div style="display:flex;gap:var(--s3)"><button class="btn btn-secondary btn-sm">Exportar dados</button><button class="btn btn-danger btn-sm">Excluir conta</button></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════ MODAL ═══════ -->
+<div class="modal-backdrop" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+// ============================================================
+// DATA (persisted in localStorage)
+// ============================================================
+const COLORS = ['amber','sage','slate','clay'];
+const ICONS = ['⚖','🏛','📝','📐','🔒','📋','💰','🧩','📚','🎯','🌍','💻','🔬','📊','✏','🗂'];
+
+function loadData(key, def) { try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; } }
+function saveData(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+let subjects = loadData('subjects', [
+  { id: 'constitucional', name: 'Dir. Constitucional', icon: '⚖', color: 'amber', progress: 78, topics: ['Princípios Fundamentais','Direitos Individuais','Organização do Estado','Poder Legislativo'], hours: 32, contents: [
+    { title: 'Art. 1 — Fundamentos da República', body: 'Soberania, cidadania, dignidade, valores sociais do trabalho e livre iniciativa, pluralismo político.', type: 'resumo' },
+    { title: 'Art. 5 — Direitos e Garantias', body: 'Todos são iguais perante a lei, sem distinção de qualquer natureza...', type: 'resumo' }
+  ]},
+  { id: 'administrativo', name: 'Dir. Administrativo', icon: '🏛', color: 'slate', progress: 52, topics: ['Licitações','Contratos','Servidores Públicos','Atos Administrativos'], hours: 24, contents: [
+    { title: 'Princípios — LIMPE', body: 'Legalidade, Impessoalidade, Moralidade, Publicidade, Eficiência (Art. 37, CF).', type: 'resumo' }
+  ]},
+  { id: 'portugues', name: 'Português', icon: '📝', color: 'sage', progress: 65, topics: ['Sintaxe','Concordância','Regência','Pontuação','Interpretação'], hours: 28, contents: [] },
+  { id: 'matematica', name: 'Matemática', icon: '📐', color: 'clay', progress: 41, topics: ['Porcentagem','Probabilidade','Geometria','Lógica'], hours: 15, contents: [] },
+  { id: 'penal', name: 'Dir. Penal', icon: '🔒', color: 'clay', progress: 35, topics: ['Teoria do Crime','Penas','Crimes contra a Pessoa'], hours: 12, contents: [] },
+  { id: 'civil', name: 'Dir. Civil', icon: '📋', color: 'amber', progress: 60, topics: ['Obrigações','Contratos','Família','Sucessões'], hours: 26, contents: [] },
+  { id: 'tributario', name: 'Dir. Tributário', icon: '💰', color: 'sage', progress: 28, topics: ['Impostos','Taxas','Contribuições'], hours: 9, contents: [] },
+  { id: 'rlm', name: 'Raciocínio Lógico', icon: '🧩', color: 'slate', progress: 55, topics: ['Proposições','Tabela Verdade','Sequências'], hours: 18, contents: [] },
+]);
+
+let schedule = loadData('schedule', { seg: 4, ter: 4, qua: 3, qui: 4, sex: 3, sab: 5, dom: 2 });
+let scheduleSubjects = loadData('scheduleSubjects', {});
+
+let notes = loadData('notes', [
+  { title: 'Princípios Constitucionais', body: 'Os princípios fundamentais da CF/88 estão nos Arts. 1 a 4.\n\nArt. 1 — Fundamentos: SOCIDIVAPLU\n- SOberania\n- CIdadania\n- DIgnidade da pessoa humana\n- VAlores sociais do trabalho\n- PLUralismo político', subject: 'Dir. Constitucional', date: '12 abr 2026' },
+  { title: 'Licitações — Nova Lei', body: 'Lei 14.133/2021\n\nModalidades:\n1. Pregão\n2. Concorrência\n3. Concurso\n4. Leilão\n5. Diálogo competitivo', subject: 'Dir. Administrativo', date: '11 abr 2026' },
+  { title: 'Concordância Verbal', body: '1. Sujeito composto anteposto → plural\n2. Sujeito composto posposto → pode concordar c/ mais próximo\n3. Verbos impessoais → singular\n4. Expressões partitivas → singular ou plural', subject: 'Português', date: '10 abr 2026' },
+]);
+
+const flashcards = [
+  { subject: 'Dir. Constitucional', q: 'Quais são os fundamentos da República Federativa do Brasil?', a: 'Soberania, cidadania, dignidade da pessoa humana, valores sociais do trabalho e da livre iniciativa, e pluralismo político (Art. 1, CF/88).' },
+  { subject: 'Dir. Constitucional', q: 'O que é o princípio da legalidade?', a: 'Ninguém será obrigado a fazer ou deixar de fazer alguma coisa senão em virtude de lei (Art. 5, II, CF/88).' },
+  { subject: 'Dir. Administrativo', q: 'Quais são as modalidades de licitação?', a: 'Concorrência, tomada de preços, convite, concurso, leilão e diálogo competitivo (Lei 14.133/2021).' },
+  { subject: 'Português', q: 'Quando usar "há" e "a" para indicar tempo?', a: '"Há" = tempo passado (faz). "A" = tempo futuro.' },
+  { subject: 'Dir. Constitucional', q: 'Quais são os objetivos fundamentais da República?', a: 'Construir sociedade livre/justa/solidária, garantir desenvolvimento nacional, erradicar pobreza, promover bem de todos (Art. 3).' },
+  { subject: 'Dir. Penal', q: 'Quais são os elementos do fato típico?', a: 'Conduta, resultado, nexo causal e tipicidade.' },
+  { subject: 'Matemática', q: 'Qual a fórmula de juros compostos?', a: 'M = C × (1 + i)^t' },
+  { subject: 'Dir. Civil', q: 'Diferença entre prescrição e decadência?', a: 'Prescrição extingue a pretensão (pode suspender/interromper). Decadência extingue o direito (geralmente não se suspende).' },
+  { subject: 'Dir. Administrativo', q: 'Princípios expressos da administração pública?', a: 'LIMPE: Legalidade, Impessoalidade, Moralidade, Publicidade, Eficiência (Art. 37).' },
+  { subject: 'Raciocínio Lógico', q: 'Quando a condicional (P → Q) é falsa?', a: 'Somente quando P é verdadeira e Q é falsa.' },
+  { subject: 'Português', q: 'O que é oração subordinada adverbial causal?', a: 'Oração que exerce função de adjunto adverbial de causa. Ex: "Como choveu, a aula foi cancelada."' },
+  { subject: 'Dir. Tributário', q: 'Quais são as espécies tributárias?', a: 'Impostos, taxas, contribuições de melhoria, empréstimos compulsórios e contribuições especiais (pentapartida).' },
+];
+
+const quizQuestions = [
+  { subject: 'constitucional', text: 'São fundamentos da República, EXCETO:', options: ['A soberania','A cidadania','A igualdade social','A dignidade da pessoa humana'], correct: 2, explanation: '"Igualdade social" não está no Art. 1 da CF/88.' },
+  { subject: 'administrativo', text: 'Tratar todos sem discriminação é o princípio da:', options: ['Legalidade','Impessoalidade','Moralidade','Publicidade'], correct: 1, explanation: 'Impessoalidade = tratamento isonômico.' },
+  { subject: 'portugues', text: 'Erro de concordância verbal:', options: ['Fazem cinco anos que não o vejo','Havia muitas pessoas na sala','Devem existir soluções melhores','Falta resolver dois problemas'], correct: 0, explanation: '"Fazer" indicando tempo é impessoal: "Faz cinco anos".' },
+  { subject: 'matematica', text: 'Produto +20% depois -20%, preço final:', options: ['Igual','4% menor','4% maior','2% menor'], correct: 1, explanation: '100 → 120 → 96. Perda de 4%.' },
+  { subject: 'constitucional', text: 'Habeas corpus protege:', options: ['Ato administrativo ilegal','Liberdade de locomoção','Direito líquido e certo','Direito de informação'], correct: 1, explanation: 'HC = liberdade de ir e vir (Art. 5, LXVIII).' },
+  { subject: 'administrativo', text: 'Anular ato ilegal pela própria administração é:', options: ['Poder de Polícia','Regulamentar','Hierárquico','Autotutela'], correct: 3, explanation: 'Autotutela = Súmula 473, STF.' },
+  { subject: 'portugues', text: '"É necessário que todos participem" — a oração é:', options: ['Subst. subjetiva','Subst. obj. direta','Adverbial causal','Adj. restritiva'], correct: 0, explanation: 'Exerce função de sujeito = subordinada substantiva subjetiva.' },
+  { subject: 'constitucional', text: 'Competência privativa da União:', options: ['Dir. tributário','Dir. penal','Proteção ao meio ambiente','Educação'], correct: 1, explanation: 'Direito penal = Art. 22, I, CF/88.' },
+  { subject: 'matematica', text: '3 vermelhas e 7 azuis, P(2 vermelhas sem reposição):', options: ['9/100','1/15','3/50','6/90'], correct: 1, explanation: '(3/10)×(2/9) = 6/90 = 1/15.' },
+  { subject: 'administrativo', text: 'NÃO é atributo do poder de polícia:', options: ['Discricionariedade','Autoexecutoriedade','Coercibilidade','Imperatividade bilateral'], correct: 3, explanation: 'Atributos: discricionariedade, autoexecutoriedade, coercibilidade.' },
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentPage = 'dashboard';
+let currentFcIndex = 0;
+let currentNoteIndex = 0;
+let quizState = { questions: [], current: 0, score: 0, answers: [], timer: null, seconds: 0 };
+let pomoState = { mode: 'work', running: false, seconds: 25*60, timer: null, sessions: 0, todaySessions: 0, todayMinutes: 0, durations: loadData('pomoDurations', { work: 25, short: 5, long: 15 }) };
+
+function persist() { saveData('subjects', subjects); saveData('notes', notes); saveData('schedule', schedule); saveData('scheduleSubjects', scheduleSubjects); saveData('pomoDurations', pomoState.durations); }
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+const pageTitles = {
+  dashboard: ['Dashboard','Sua plataforma de estudos'],
+  materias: ['Matérias','Gerencie suas matérias'],
+  cronograma: ['Cronograma','Planeje sua semana'],
+  pomodoro: ['Pomodoro','Técnica de foco e pausa'],
+  flashcards: ['Flashcards','Revisão espaçada'],
+  simulado: ['Simulado','Teste seus conhecimentos'],
+  notas: ['Notas','Seus resumos e anotações'],
+  desempenho: ['Desempenho','Acompanhe sua evolução'],
+  config: ['Configurações','Personalize sua experiência'],
+};
+
+function navigate(page, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  el.classList.add('active');
+  el.classList.remove('fade-in');
+  void el.offsetWidth;
+  el.classList.add('fade-in');
+  if (btn) btn.classList.add('active');
+  currentPage = page;
+  document.getElementById('page-title').textContent = pageTitles[page][0];
+  document.getElementById('page-subtitle').textContent = pageTitles[page][1];
+  document.getElementById('sidebar').classList.remove('open');
+
+  if (page === 'materias') { showMateriasList(); renderSubjects(); }
+  if (page === 'flashcards') initFlashcards();
+  if (page === 'notas') renderNotes();
+  if (page === 'desempenho') renderPerformance();
+  if (page === 'cronograma') renderCronograma();
+  if (page === 'pomodoro') initPomodoro();
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function initDashboard() {
+  const weekData = [{day:'Seg',hours:3.5},{day:'Ter',hours:4.2},{day:'Qua',hours:2.8},{day:'Qui',hours:5.0},{day:'Sex',hours:3.0},{day:'Sáb',hours:4.5},{day:'Dom',hours:0}];
+  renderWeekChart('weekChart', weekData);
+
+  const dash = document.getElementById('dashSubjects');
+  dash.innerHTML = subjects.slice(0,5).map(s => `
+    <div class="subject-card" onclick="navigate('materias',document.querySelector('[data-page=materias]'));openSubjectDetail('${s.id}')">
+      <div class="subject-icon" style="background:var(--${s.color}-l);color:var(--${s.color})">${s.icon}</div>
+      <div class="subject-info"><div class="subject-name">${s.name}</div><div class="subject-meta">${s.topics.length} tópicos · ${s.hours}h</div>
+        <div class="progress" style="margin-top:8px"><div class="progress-track"><div class="progress-fill ${s.color}" style="width:${s.progress}%"></div></div></div>
+      </div>
+      <div style="font-family:var(--f-display);font-size:20px;font-weight:700">${s.progress}%</div>
+    </div>`).join('');
+
+  const tasks = document.getElementById('todayTasks');
+  [{text:'Revisar Dir. Constitucional — Art. 5',done:true},{text:'Flashcards de Português (20 cards)',done:false},{text:'Simulado de Dir. Administrativo',done:false}].forEach(t => {
+    tasks.innerHTML += `<div style="display:flex;align-items:center;gap:var(--s3);padding:8px 0;${t.done?'opacity:.5':''}">
+      <div style="width:20px;height:20px;border-radius:6px;border:1.5px solid ${t.done?'var(--sage)':'var(--mist)'};background:${t.done?'var(--sage)':'white'};display:flex;align-items:center;justify-content:center;color:white;font-size:11px;cursor:pointer;flex-shrink:0" onclick="let d=this.style.background==='white';this.style.background=d?'var(--sage)':'white';this.style.borderColor=d?'var(--sage)':'var(--mist)';this.innerHTML=d?'✓':'';this.parentElement.style.opacity=d?'.5':'1'">${t.done?'✓':''}</div>
+      <span style="font-size:13px;${t.done?'text-decoration:line-through':''}">${t.text}</span></div>`;
+  });
+
+  const feed = document.getElementById('activityFeed');
+  [{text:'Simulado concluído: 84%',color:'var(--sage)',time:'Há 2h'},{text:'15 flashcards revisados',color:'var(--amber)',time:'Há 4h'},{text:'Nova nota criada',color:'var(--slate)',time:'Ontem'},{text:'Meta semanal atingida: 25h',color:'var(--sage)',time:'Ontem'}].forEach(a => {
+    feed.innerHTML += `<div class="activity-item"><div class="activity-dot" style="background:${a.color}"></div><div><div class="activity-text">${a.text}</div><div class="activity-time">${a.time}</div></div></div>`;
+  });
+}
+
+function renderWeekChart(id, data) {
+  const maxH = Math.max(...data.map(d => d.hours), 1);
+  document.getElementById(id).innerHTML = data.map(d => {
+    const h = d.hours / maxH * 100;
+    const color = d.hours >= 4 ? 'var(--sage)' : d.hours >= 2 ? 'var(--amber)' : d.hours > 0 ? 'var(--clay)' : 'var(--cream)';
+    return `<div class="week-bar-wrap"><div class="week-hours">${d.hours}h</div><div class="week-bar-track"><div class="week-bar" style="height:${Math.max(h,4)}%;background:${color}"></div></div><div class="week-label">${d.day}</div></div>`;
+  }).join('');
+}
+
+// ============================================================
+// MATERIAS — CRUD
+// ============================================================
+function showMateriasList() {
+  document.getElementById('materiasListView').style.display = '';
+  document.getElementById('materiasDetailView').style.display = 'none';
+}
+
+function renderSubjects() {
+  document.getElementById('materiasCount').textContent = `${subjects.length} matérias · ${subjects.reduce((a,s) => a + s.topics.length, 0)} tópicos`;
+  const grid = document.getElementById('subjectGrid');
+  grid.innerHTML = subjects.map((s,i) => `
+    <div class="subject-full-card">
+      <div class="subject-full-header" style="cursor:pointer" onclick="openSubjectDetail('${s.id}')">
+        <div class="subject-icon" style="background:var(--${s.color}-l);color:var(--${s.color});width:56px;height:56px;font-size:26px;border-radius:var(--r16)">${s.icon}</div>
+        <div style="flex:1"><div style="font-weight:500;font-size:16px">${s.name}</div><div style="font-size:12px;color:var(--ink-3);margin-top:2px">${s.topics.length} tópicos · ${s.hours}h</div></div>
+        <div style="font-family:var(--f-display);font-size:24px;font-weight:700">${s.progress}%</div>
+      </div>
+      <div class="subject-full-body">
+        <div class="progress"><div class="progress-track"><div class="progress-fill ${s.color}" style="width:${s.progress}%"></div></div></div>
+        <div class="subject-topics">${s.topics.map(t => `<span class="topic-chip">${t}</span>`).join('')}</div>
+        <div class="subject-actions">
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openSubjectDetail('${s.id}')">Abrir →</button>
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openSubjectModal('${s.id}')">Editar</button>
+          <button class="btn btn-ghost btn-sm" style="color:var(--clay)" onclick="event.stopPropagation();deleteSubject('${s.id}')">Excluir</button>
+        </div>
+      </div>
+    </div>`).join('');
+
+  // Update quiz subject select
+  const sel = document.getElementById('quizSubjectSelect');
+  sel.innerHTML = '<option value="all">Todas as matérias</option>' + subjects.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+}
+
+function openSubjectModal(editId) {
+  const s = editId ? subjects.find(x => x.id === editId) : null;
+  const isEdit = !!s;
+  const modal = document.getElementById('modal');
+  const content = document.getElementById('modalContent');
+  content.innerHTML = `
+    <div class="modal-title">${isEdit ? 'Editar' : 'Nova'} Matéria</div>
+    <div class="field" style="margin-bottom:var(--s4)">
+      <label class="field-label">Nome</label>
+      <input class="input" id="subjectNameInput" value="${isEdit ? s.name : ''}" placeholder="Ex: Direito Processual Civil">
+    </div>
+    <div class="field" style="margin-bottom:var(--s4)">
+      <label class="field-label">Ícone</label>
+      <div style="display:flex;flex-wrap:wrap;gap:var(--s2)" id="iconPicker">
+        ${ICONS.map(ic => `<button style="width:40px;height:40px;border-radius:var(--r8);border:1.5px solid ${s && s.icon===ic?'var(--amber)':'var(--mist)'};background:${s && s.icon===ic?'var(--amber-l)':'white'};font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center" onclick="document.querySelectorAll('#iconPicker button').forEach(b=>{b.style.borderColor='var(--mist)';b.style.background='white'});this.style.borderColor='var(--amber)';this.style.background='var(--amber-l)';this.dataset.selected='true'" ${s && s.icon===ic?'data-selected="true"':''}>${ic}</button>`).join('')}
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:var(--s4)">
+      <label class="field-label">Cor</label>
+      <div style="display:flex;gap:var(--s3)" id="colorPicker">
+        ${COLORS.map(c => `<button style="width:36px;height:36px;border-radius:50%;background:var(--${c});border:3px solid ${s && s.color===c?'var(--ink)':'transparent'};cursor:pointer" onclick="document.querySelectorAll('#colorPicker button').forEach(b=>b.style.borderColor='transparent');this.style.borderColor='var(--ink)';this.dataset.selected='true'" ${s && s.color===c?'data-selected="true"':''}></button>`).join('')}
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:var(--s5)">
+      <label class="field-label">Tópicos (separados por vírgula)</label>
+      <input class="input" id="subjectTopicsInput" value="${isEdit ? s.topics.join(', ') : ''}" placeholder="Ex: Contratos, Obrigações, Família">
+    </div>
+    <div style="display:flex;gap:var(--s3);justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveSubject('${editId || ''}')">${isEdit ? 'Salvar' : 'Adicionar'}</button>
+    </div>`;
+  modal.classList.add('open');
+}
+
+function saveSubject(editId) {
+  const name = document.getElementById('subjectNameInput').value.trim();
+  if (!name) return;
+  const iconBtn = document.querySelector('#iconPicker button[data-selected="true"]');
+  const colorBtn = document.querySelector('#colorPicker button[data-selected="true"]');
+  const icon = iconBtn ? iconBtn.textContent.trim() : '📚';
+  const color = colorBtn ? COLORS[Array.from(colorBtn.parentNode.children).indexOf(colorBtn)] : 'amber';
+  const topics = document.getElementById('subjectTopicsInput').value.split(',').map(t => t.trim()).filter(Boolean);
+
+  if (editId) {
+    const s = subjects.find(x => x.id === editId);
+    if (s) { s.name = name; s.icon = icon; s.color = color; s.topics = topics.length ? topics : s.topics; }
+  } else {
+    const id = name.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0,20) + Date.now();
+    subjects.push({ id, name, icon, color, progress: 0, topics, hours: 0, contents: [] });
+  }
+  persist(); renderSubjects(); closeModal();
+}
+
+function deleteSubject(id) {
+  if (!confirm('Excluir esta matéria?')) return;
+  subjects = subjects.filter(s => s.id !== id);
+  persist(); renderSubjects();
+}
+
+function openSubjectDetail(id) {
+  const s = subjects.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('materiasListView').style.display = 'none';
+  const detail = document.getElementById('materiasDetailView');
+  detail.style.display = '';
+  detail.innerHTML = `
+    <button class="back-btn" onclick="showMateriasList();renderSubjects()">← Voltar para matérias</button>
+    <div class="subject-detail-header">
+      <div class="subject-detail-icon" style="background:var(--${s.color}-l);color:var(--${s.color})">${s.icon}</div>
+      <div style="flex:1">
+        <div style="font-family:var(--f-display);font-size:24px;font-weight:700">${s.name}</div>
+        <div style="font-size:13px;color:var(--ink-3);margin-top:4px">${s.topics.length} tópicos · ${s.hours}h estudadas · ${s.progress}% concluído</div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="openSubjectModal('${s.id}')">Editar matéria</button>
+    </div>
+    <div class="progress" style="margin-bottom:var(--s5)"><div class="progress-track" style="height:8px"><div class="progress-fill ${s.color}" style="width:${s.progress}%"></div></div></div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s4)">
+      <div style="font-weight:500;font-size:16px">Conteúdos</div>
+      <button class="btn btn-accent btn-sm" onclick="openContentModal('${s.id}')">+ Adicionar conteúdo</button>
+    </div>
+
+    <div id="subjectContents">
+      ${(s.contents || []).length === 0 ? `
+        <div style="text-align:center;padding:var(--s7);color:var(--ink-3)">
+          <div style="font-size:36px;margin-bottom:var(--s3);opacity:.4">📝</div>
+          <div style="font-size:14px;font-weight:500;color:var(--ink-2);margin-bottom:var(--s2)">Nenhum conteúdo ainda</div>
+          <div style="font-size:13px">Adicione resumos, anotações e materiais de estudo.</div>
+        </div>` : (s.contents || []).map((c, i) => `
+        <div class="content-item">
+          <div style="width:36px;height:36px;border-radius:var(--r8);background:var(--${s.color}-l);color:var(--${s.color});display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${c.type === 'resumo' ? '📝' : c.type === 'exercicio' ? '✏' : '🔗'}</div>
+          <div class="content-item-body">
+            <div class="content-item-title">${c.title}</div>
+            <div class="content-item-desc">${c.body.substring(0, 120)}${c.body.length > 120 ? '...' : ''}</div>
+            <span class="badge badge-default" style="margin-top:var(--s2)">${c.type}</span>
+          </div>
+          <div class="content-item-actions">
+            <button class="btn btn-ghost btn-sm" onclick="openContentModal('${s.id}',${i})">Editar</button>
+            <button class="btn btn-ghost btn-sm" style="color:var(--clay)" onclick="deleteContent('${s.id}',${i})">×</button>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <div style="margin-top:var(--s6)">
+      <div style="font-weight:500;font-size:16px;margin-bottom:var(--s3)">Tópicos</div>
+      <div style="display:flex;flex-wrap:wrap;gap:var(--s2)">
+        ${s.topics.map(t => `<span class="topic-chip">${t}</span>`).join('')}
+      </div>
+    </div>`;
+}
+
+function openContentModal(subjectId, editIndex) {
+  const s = subjects.find(x => x.id === subjectId);
+  const isEdit = editIndex !== undefined;
+  const c = isEdit ? s.contents[editIndex] : null;
+  const modal = document.getElementById('modal');
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-title">${isEdit ? 'Editar' : 'Novo'} Conteúdo</div>
+    <div class="field" style="margin-bottom:var(--s4)"><label class="field-label">Título</label><input class="input" id="contentTitleInput" value="${isEdit ? c.title : ''}"></div>
+    <div class="field" style="margin-bottom:var(--s4)"><label class="field-label">Tipo</label><select class="select" id="contentTypeInput"><option value="resumo" ${isEdit && c.type==='resumo'?'selected':''}>Resumo</option><option value="exercicio" ${isEdit && c.type==='exercicio'?'selected':''}>Exercício</option><option value="link" ${isEdit && c.type==='link'?'selected':''}>Link / Referência</option></select></div>
+    <div class="field" style="margin-bottom:var(--s5)"><label class="field-label">Conteúdo</label><textarea class="textarea" id="contentBodyInput" style="min-height:150px">${isEdit ? c.body : ''}</textarea></div>
+    <div style="display:flex;gap:var(--s3);justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveContent('${subjectId}',${isEdit ? editIndex : -1})">${isEdit ? 'Salvar' : 'Adicionar'}</button>
+    </div>`;
+  modal.classList.add('open');
+}
+
+function saveContent(subjectId, editIndex) {
+  const s = subjects.find(x => x.id === subjectId);
+  const title = document.getElementById('contentTitleInput').value.trim();
+  const body = document.getElementById('contentBodyInput').value.trim();
+  const type = document.getElementById('contentTypeInput').value;
+  if (!title) return;
+  if (!s.contents) s.contents = [];
+  if (editIndex >= 0) { s.contents[editIndex] = { title, body, type }; }
+  else { s.contents.push({ title, body, type }); }
+  persist(); closeModal(); openSubjectDetail(subjectId);
+}
+
+function deleteContent(subjectId, index) {
+  const s = subjects.find(x => x.id === subjectId);
+  s.contents.splice(index, 1);
+  persist(); openSubjectDetail(subjectId);
+}
+
+// ============================================================
+// CRONOGRAMA
+// ============================================================
+const DAY_NAMES = { seg:'Segunda', ter:'Terça', qua:'Quarta', qui:'Quinta', sex:'Sexta', sab:'Sábado', dom:'Domingo' };
+const DAY_KEYS = ['seg','ter','qua','qui','sex','sab','dom'];
+
+function renderCronograma() {
+  const total = DAY_KEYS.reduce((a, k) => a + (schedule[k] || 0), 0);
+  document.getElementById('cronogramaTotalWeek').textContent = total + 'h/semana';
+
+  // Day configs
+  document.getElementById('scheduleConfigs').innerHTML = DAY_KEYS.map(k => `
+    <div class="day-config">
+      <div class="day-config-info">
+        <div>
+          <div class="day-config-name">${DAY_NAMES[k]}</div>
+          <div class="day-config-sub">${schedule[k] > 0 ? schedule[k] + ' horas de estudo' : 'Dia de descanso'}</div>
+        </div>
+      </div>
+      <div class="day-hours-control">
+        <button class="hours-btn" onclick="adjustSchedule('${k}',-1)">−</button>
+        <div><div class="hours-value">${schedule[k]}</div><div class="hours-unit">horas</div></div>
+        <button class="hours-btn" onclick="adjustSchedule('${k}',1)">+</button>
+      </div>
+    </div>`).join('');
+
+  // Chart
+  const chartData = DAY_KEYS.map((k,i) => ({ day: ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'][i], hours: schedule[k] }));
+  renderWeekChart('scheduleChart', chartData);
+
+  // Subject distribution
+  const grid = document.getElementById('scheduleSubjectGrid');
+  grid.innerHTML = DAY_KEYS.map(k => {
+    const assigned = scheduleSubjects[k] || [];
+    return `<div style="margin-bottom:var(--s4)">
+      <div style="font-weight:500;font-size:13px;margin-bottom:var(--s2)">${DAY_NAMES[k]} ${schedule[k] > 0 ? '(' + schedule[k] + 'h)' : '— descanso'}</div>
+      ${schedule[k] > 0 ? `<div style="display:flex;flex-wrap:wrap;gap:var(--s2)">
+        ${subjects.map(s => {
+          const isSelected = assigned.includes(s.id);
+          return `<button style="padding:4px 12px;border-radius:var(--pill);font-size:11px;font-family:var(--f-body);cursor:pointer;border:1.5px solid ${isSelected ? 'var(--' + s.color + ')' : 'var(--mist)'};background:${isSelected ? 'var(--' + s.color + '-l)' : 'white'};color:${isSelected ? 'var(--' + s.color + '-d)' : 'var(--ink-3)'};transition:var(--transition)" onclick="toggleScheduleSubject('${k}','${s.id}')">${s.icon} ${s.name}</button>`;
+        }).join('')}
+      </div>` : '<span style="font-size:12px;color:var(--ink-3)">—</span>'}
+    </div>`;
+  }).join('');
+}
+
+function adjustSchedule(day, delta) {
+  schedule[day] = Math.max(0, Math.min(12, (schedule[day] || 0) + delta));
+  persist(); renderCronograma();
+}
+
+function toggleScheduleSubject(day, subjectId) {
+  if (!scheduleSubjects[day]) scheduleSubjects[day] = [];
+  const arr = scheduleSubjects[day];
+  const idx = arr.indexOf(subjectId);
+  if (idx >= 0) arr.splice(idx, 1); else arr.push(subjectId);
+  persist(); renderCronograma();
+}
+
+// ============================================================
+// POMODORO
+// ============================================================
+function initPomodoro() {
+  document.getElementById('pomoSubjectSelect').innerHTML = '<option value="">Selecionar matéria</option>' + subjects.map(s => `<option value="${s.id}">${s.icon} ${s.name}</option>`).join('');
+  updatePomoDisplay();
+  renderPomoSessions();
+}
+
+function setPomoMode(mode, btn) {
+  if (pomoState.running) return;
+  pomoState.mode = mode;
+  pomoState.seconds = pomoState.durations[mode] * 60;
+  btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updatePomoDisplay();
+}
+
+function updatePomoDisplay() {
+  const m = Math.floor(pomoState.seconds / 60).toString().padStart(2, '0');
+  const s = (pomoState.seconds % 60).toString().padStart(2, '0');
+  document.getElementById('pomoTime').textContent = m + ':' + s;
+  document.getElementById('pomoLabel').textContent = pomoState.mode === 'work' ? 'Foco' : pomoState.mode === 'short' ? 'Pausa Curta' : 'Pausa Longa';
+
+  const total = pomoState.durations[pomoState.mode] * 60;
+  const progress = ((total - pomoState.seconds) / total * 100);
+  const color = pomoState.mode === 'work' ? 'var(--amber)' : 'var(--sage)';
+  document.getElementById('pomoRing').style.background = `conic-gradient(${color} ${progress}%, var(--cream) 0%)`;
+
+  document.getElementById('pomoWorkVal').textContent = pomoState.durations.work;
+  document.getElementById('pomoShortVal').textContent = pomoState.durations.short;
+  document.getElementById('pomoLongVal').textContent = pomoState.durations.long;
+  document.getElementById('pomoTodayCount').textContent = pomoState.todaySessions;
+  document.getElementById('pomoTodayTime').textContent = pomoState.todayMinutes + 'min';
+}
+
+function togglePomodoro() {
+  if (pomoState.running) {
+    clearInterval(pomoState.timer);
+    pomoState.running = false;
+    document.getElementById('pomoStartBtn').textContent = 'Continuar';
+  } else {
+    pomoState.running = true;
+    document.getElementById('pomoStartBtn').textContent = 'Pausar';
+    pomoState.timer = setInterval(() => {
+      pomoState.seconds--;
+      if (pomoState.seconds <= 0) {
+        clearInterval(pomoState.timer);
+        pomoState.running = false;
+        document.getElementById('pomoStartBtn').textContent = 'Iniciar';
+        if (pomoState.mode === 'work') {
+          pomoState.sessions++;
+          pomoState.todaySessions++;
+          pomoState.todayMinutes += pomoState.durations.work;
+          renderPomoSessions();
+          try { new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=').play(); } catch {}
+          alert('Sessão de foco concluída! Hora da pausa.');
+          pomoState.mode = pomoState.sessions % 4 === 0 ? 'long' : 'short';
+        } else {
+          alert('Pausa finalizada! Vamos focar.');
+          pomoState.mode = 'work';
+        }
+        pomoState.seconds = pomoState.durations[pomoState.mode] * 60;
+      }
+      updatePomoDisplay();
+    }, 1000);
+  }
+}
+
+function resetPomodoro() {
+  clearInterval(pomoState.timer);
+  pomoState.running = false;
+  pomoState.seconds = pomoState.durations[pomoState.mode] * 60;
+  document.getElementById('pomoStartBtn').textContent = 'Iniciar';
+  updatePomoDisplay();
+}
+
+function adjustPomo(type, delta) {
+  if (pomoState.running) return;
+  pomoState.durations[type] = Math.max(1, Math.min(60, pomoState.durations[type] + delta));
+  if (pomoState.mode === type) pomoState.seconds = pomoState.durations[type] * 60;
+  persist(); updatePomoDisplay();
+}
+
+function renderPomoSessions() {
+  const container = document.getElementById('pomoSessions');
+  let dots = '';
+  for (let i = 0; i < 4; i++) {
+    const cls = i < (pomoState.sessions % 4) ? 'completed' : i === (pomoState.sessions % 4) && pomoState.mode === 'work' ? 'active' : '';
+    dots += `<div class="pomo-dot ${cls}"></div>`;
+  }
+  container.innerHTML = dots;
+}
+
+// ============================================================
+// FLASHCARDS
+// ============================================================
+function initFlashcards() { currentFcIndex = 0; showFlashcard(); }
+function showFlashcard() {
+  if (currentFcIndex >= flashcards.length) {
+    document.getElementById('flashcardArea').innerHTML = '<div style="text-align:center;padding:var(--s7);color:var(--ink-3)"><div style="font-size:48px;margin-bottom:var(--s4)">🎉</div><div style="font-size:16px;font-weight:500;color:var(--ink-2);margin-bottom:var(--s2)">Parabéns!</div><div style="font-size:13px;margin-bottom:var(--s5)">Todos os flashcards revisados.</div><button class="btn btn-accent" onclick="currentFcIndex=0;initFlashcards()">Recomeçar</button></div>';
+    return;
+  }
+  const fc = flashcards[currentFcIndex];
+  document.getElementById('fcQuestion').textContent = fc.q;
+  document.getElementById('fcAnswer').textContent = fc.a;
+  document.getElementById('fcCounter').textContent = `${currentFcIndex+1}/${flashcards.length}`;
+  document.getElementById('fcLabel').textContent = fc.subject;
+  document.getElementById('flashcard').classList.remove('flipped');
+  document.getElementById('fcActions').style.display = 'none';
+  document.getElementById('fcCount').textContent = `${flashcards.length - currentFcIndex} pendentes`;
+}
+function flipCard() { const c = document.getElementById('flashcard'); if (!c.classList.contains('flipped')) { c.classList.add('flipped'); document.getElementById('fcActions').style.display = 'flex'; } }
+function rateCard() { currentFcIndex++; showFlashcard(); }
+function setFcFilter(f, btn) { btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+
+// ============================================================
+// SIMULADO
+// ============================================================
+function startQuiz() {
+  const count = parseInt(document.getElementById('quizCountSelect').value);
+  const filter = document.getElementById('quizSubjectSelect').value;
+  let pool = filter === 'all' ? [...quizQuestions] : quizQuestions.filter(q => q.subject === filter);
+  pool.sort(() => Math.random() - 0.5);
+  quizState = { questions: pool.slice(0, Math.min(count, pool.length)), current: 0, score: 0, answers: [], seconds: 0, timer: null };
+  document.getElementById('quizStart').style.display = 'none';
+  document.getElementById('quizActive').style.display = 'block';
+  document.getElementById('quizResult').classList.remove('visible');
+  clearInterval(quizState.timer);
+  quizState.timer = setInterval(() => { quizState.seconds++; const m = Math.floor(quizState.seconds/60).toString().padStart(2,'0'); const s = (quizState.seconds%60).toString().padStart(2,'0'); document.getElementById('quizTimer').textContent = m+':'+s; }, 1000);
+  renderQuestion();
+}
+function renderQuestion() {
+  const q = quizState.questions[quizState.current]; const total = quizState.questions.length; const pct = Math.round(quizState.current/total*100);
+  document.getElementById('quizProgressText').textContent = `Questão ${quizState.current+1} de ${total}`;
+  document.getElementById('quizProgressPct').textContent = pct+'%';
+  document.getElementById('quizProgressBar').style.width = pct+'%';
+  const letters = ['A','B','C','D'];
+  document.getElementById('quizQuestionArea').innerHTML = `<div class="quiz-question-card"><div class="quiz-question-num">Questão ${quizState.current+1}</div><div class="quiz-question-text">${q.text}</div><div class="quiz-options">${q.options.map((o,i)=>`<div class="quiz-option" onclick="selectOption(${i},this)" data-index="${i}"><div class="quiz-option-letter">${letters[i]}</div><span>${o}</span></div>`).join('')}</div><div class="quiz-explanation" id="quizExplanation">${q.explanation}</div></div>`;
+  document.getElementById('quizCheckBtn').style.display = 'none';
+  document.getElementById('quizNextBtn').style.display = 'none';
+}
+function selectOption(i, el) {
+  if (el.closest('.quiz-question-card').querySelector('.correct,.wrong')) return;
+  el.closest('.quiz-options').querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('quizCheckBtn').style.display = 'inline-flex';
+}
+function checkAnswer() {
+  const q = quizState.questions[quizState.current]; const sel = document.querySelector('.quiz-option.selected'); if (!sel) return;
+  const idx = parseInt(sel.dataset.index);
+  document.querySelectorAll('.quiz-option').forEach((o,i) => { if (i===q.correct) o.classList.add('correct'); if (i===idx && i!==q.correct) o.classList.add('wrong'); o.style.cursor='default'; });
+  if (idx===q.correct) quizState.score++;
+  document.getElementById('quizExplanation').classList.add('visible');
+  document.getElementById('quizCheckBtn').style.display = 'none';
+  document.getElementById('quizNextBtn').style.display = 'inline-flex';
+  document.getElementById('quizNextBtn').textContent = quizState.current===quizState.questions.length-1 ? 'Ver resultado' : 'Próxima →';
+}
+function nextQuestion() { quizState.current++; if (quizState.current >= quizState.questions.length) { finishQuiz(); return; } renderQuestion(); }
+function finishQuiz() {
+  clearInterval(quizState.timer);
+  document.getElementById('quizActive').style.display = 'none';
+  const total = quizState.questions.length; const pct = Math.round(quizState.score/total*100);
+  const m = Math.floor(quizState.seconds/60); const s = quizState.seconds%60;
+  document.getElementById('quizScoreValue').textContent = pct+'%';
+  document.getElementById('quizScoreValue').style.color = pct>=70?'var(--sage)':pct>=50?'var(--amber)':'var(--clay)';
+  document.getElementById('quizScoreLabel').textContent = pct>=70?'Excelente!':pct>=50?'Bom, mas pode melhorar!':'Revise e tente novamente.';
+  document.getElementById('quizCorrectCount').textContent = quizState.score;
+  document.getElementById('quizWrongCount').textContent = total-quizState.score;
+  document.getElementById('quizTimeResult').textContent = m+':'+s.toString().padStart(2,'0');
+  document.getElementById('quizResult').classList.add('visible');
+}
+function resetQuiz() { clearInterval(quizState.timer); document.getElementById('quizStart').style.display='block'; document.getElementById('quizActive').style.display='none'; document.getElementById('quizResult').classList.remove('visible'); }
+
+// ============================================================
+// NOTAS
+// ============================================================
+function renderNotes() {
+  document.getElementById('notesList').innerHTML = notes.map((n,i) => `<div class="note-item ${i===currentNoteIndex?'active':''}" onclick="selectNote(${i})"><div class="note-item-title">${n.title||'Sem título'}</div><div class="note-item-date">${n.date}</div></div>`).join('');
+  if (notes.length > 0) { const n = notes[currentNoteIndex]; document.getElementById('noteTitle').value = n.title; document.getElementById('noteBody').value = n.body; document.getElementById('noteSubjectBadge').textContent = n.subject; document.getElementById('noteDate').textContent = 'Atualizado em ' + n.date; }
+}
+function selectNote(i) { currentNoteIndex = i; renderNotes(); }
+function addNote() { notes.unshift({title:'',body:'',subject:'Geral',date:'13 abr 2026'}); currentNoteIndex = 0; persist(); renderNotes(); document.getElementById('noteTitle').focus(); }
+function saveCurrentNote() { if (!notes.length) return; notes[currentNoteIndex].title = document.getElementById('noteTitle').value; notes[currentNoteIndex].body = document.getElementById('noteBody').value; persist(); const items = document.querySelectorAll('.note-item-title'); if (items[currentNoteIndex]) items[currentNoteIndex].textContent = notes[currentNoteIndex].title || 'Sem título'; }
+
+// ============================================================
+// DESEMPENHO
+// ============================================================
+function renderPerformance() {
+  const heatmap = document.getElementById('heatmapCalendar'); const days = [];
+  for (let i = 29; i >= 0; i--) { const h = i===0?0:Math.random()*6; let bg='var(--cream)'; if(h>4)bg='var(--sage)'; else if(h>2)bg='rgba(61,107,79,.6)'; else if(h>.5)bg='var(--sage-l)';
+    days.push(`<div style="width:20px;height:20px;border-radius:4px;background:${bg};cursor:pointer" title="${h.toFixed(1)}h"></div>`); }
+  heatmap.innerHTML = days.join('');
+  const perfData = [{name:'Dir. Constitucional',pct:88,color:'sage'},{name:'Dir. Administrativo',pct:76,color:'sage'},{name:'Português',pct:72,color:'amber'},{name:'Dir. Civil',pct:68,color:'amber'},{name:'Raciocínio Lógico',pct:65,color:'amber'},{name:'Matemática',pct:54,color:'clay'},{name:'Dir. Penal',pct:50,color:'clay'},{name:'Dir. Tributário',pct:42,color:'clay'}];
+  document.getElementById('performanceBySubject').innerHTML = perfData.map(p => `<div class="progress"><div class="progress-header"><span>${p.name}</span><span style="font-weight:600;color:var(--${p.color})">${p.pct}%</span></div><div class="progress-track" style="height:8px"><div class="progress-fill ${p.color}" style="width:${p.pct}%"></div></div></div>`).join('');
+}
+
+// ============================================================
+// MODAL & UTILS
+// ============================================================
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ============================================================
+// INIT
+// ============================================================
+initDashboard();
+renderSubjects();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
