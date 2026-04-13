@@ -1,11 +1,11 @@
-const CACHE_NAME = 'ink-app-v1';
+const CACHE_NAME = 'estude-app-v2';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icons/icon-192.svg',
-  '/icons/icon-512.svg',
-  'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@400;500;600&family=DM+Mono&display=swap'
+  './',
+  './index.html',
+  './manifest.json',
+  './icons/icon-192.svg',
+  './icons/icon-512.svg',
+  'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@400;500&family=DM+Mono&display=swap'
 ];
 
 // Install — cache all assets
@@ -26,8 +26,16 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Fetch — cache first, then network
+// Fetch — network first for API calls, cache first for static assets
 self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+
+  // Never cache API calls (Anthropic)
+  if (url.hostname === 'api.anthropic.com') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
@@ -40,7 +48,7 @@ self.addEventListener('fetch', event => {
       });
     }).catch(() => {
       if (event.request.destination === 'document') {
-        return caches.match('/index.html');
+        return caches.match('./index.html');
       }
     })
   );
